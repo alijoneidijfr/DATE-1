@@ -6,7 +6,17 @@
 <div class="hero">
     <div class="card romantic-card cafe-card">
         <div class="heart">☕</div>
+        <div class="badge">انتخاب مکان قرار</div>
         <h1>پیشنهادت برای کافه چیه؟</h1>
+        <p class="subtitle">
+            لطفاً نام کافه و محله را وارد کن. مشخص کردن لوکیشن روی نقشه دلخواه است.
+        </p>
+
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
 
         <form action="{{ url_for('submit_final') }}" method="POST">
             <input type="hidden" name="date" value="{{ date }}">
@@ -16,36 +26,61 @@
 
             <div class="cafe-fields">
                 <div class="form-group">
-                    <label for="cafe_name">نام کافه <span style="color:red;">*</span></label>
-                    <input id="cafe_name" type="text" name="cafe_name" required placeholder="نام کافه را وارد کن">
+                    <label for="cafe_name">نام کافه <span style="color: var(--pink);">*</span></label>
+                    <input
+                        id="cafe_name"
+                        type="text"
+                        name="cafe_name"
+                        placeholder="مثال: کافه لند"
+                        required
+                    >
                 </div>
 
                 <div class="form-group">
-                    <label for="cafe_area">محله <span style="color:red;">*</span></label>
-                    <input id="cafe_area" type="text" name="cafe_area" required placeholder="محله کافه را وارد کن">
+                    <label for="cafe_area">محله کافه <span style="color: var(--pink);">*</span></label>
+                    <input
+                        id="cafe_area"
+                        type="text"
+                        name="cafe_area"
+                        placeholder="مثال: ولیعصر"
+                        required
+                    >
                 </div>
             </div>
 
             <div class="cafe-box">
-                <p class="map-title">لوکیشن کافه (اختیاری)</p>
-                <p class="map-hint">اگر دوست داری، روی نقشه انتخابش کن 📍</p>
+                <p class="map-title">
+                    لوکیشن دقیق روی نقشه
+                    <span class="optional-text">(اختیاری)</span>
+                </p>
+                <p class="map-hint">
+                    در صورت تمایل، نقطه روی نقشه را کلیک کنید 📍
+                </p>
                 <div id="map"></div>
             </div>
 
-            <!-- فیلد شماره تماس با استایل کم‌رنگ -->
             <div class="phone-box light-field">
-                <label for="phone">شماره تماس جهت هماهنگی (پیشنهادی)</label>
-                <input id="phone" type="tel" name="phone" value="+989190118068" required>
+                <label for="phone">شماره تماس جهت هماهنگی</label>
+                <input
+                    id="phone"
+                    type="tel"
+                    name="phone"
+                    value="+989190118068"
+                    required
+                >
+                <small>می‌توانی این شماره را به شمارهٔ خودت تغییر دهی.</small>
             </div>
 
             <div class="confirm-box">
                 <label class="checkbox-label">
                     <input type="checkbox" required>
-                    <span>اطلاعات قرار را تأیید می‌کنم.</span>
+                    <span>اطلاعات بالا را تأیید می‌کنم.</span>
                 </label>
             </div>
 
-            <button type="submit" class="yes-btn full-width">ثبت نهایی قرار 💕</button>
+            <button type="submit" class="yes-btn full-width">
+                ثبت نهایی قرار 💕
+            </button>
         </form>
     </div>
 </div>
@@ -54,13 +89,18 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     const map = L.map("map").setView([35.6892, 51.3890], 12);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(map);
+
     let marker = null;
     map.on("click", function (event) {
-        if (marker) map.removeLayer(marker);
+        if (marker) {
+            map.removeLayer(marker);
+        }
         marker = L.marker(event.latlng).addTo(map);
-        document.getElementById("lat").value = event.latlng.lat;
-        document.getElementById("lng").value = event.latlng.lng;
+        document.getElementById("lat").value = event.latlng.lat.toFixed(6);
+        document.getElementById("lng").value = event.latlng.lng.toFixed(6);
     });
 </script>
 {% endblock %}
