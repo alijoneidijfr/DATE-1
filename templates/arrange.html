@@ -32,12 +32,8 @@
                     name="date"
                     id="date_input"
                     data-jdp
-                    data-jdp-only-date
-                    data-jdp-min-date="1405/05/24"
-                    data-jdp-max-date="1405/06/31"
                     placeholder="برای انتخاب تاریخ کلیک کن"
                     autocomplete="off"
-                    readonly
                     required
                 >
             </div>
@@ -51,7 +47,6 @@
                     <option value="" disabled selected>
                         ساعت را انتخاب کن
                     </option>
-
                     <option value="09:00">۰۹:۰۰</option>
                     <option value="09:30">۰۹:۳۰</option>
                     <option value="10:00">۱۰:۰۰</option>
@@ -81,73 +76,39 @@
     </div>
 </div>
 
-<!-- نسخه مشخص و پایدار کتابخانه -->
-<link
-    rel="stylesheet"
-    href="https://unpkg.com/@majidh1/jalalidatepicker@0.10.0/dist/jalalidatepicker.min.css"
->
-
-<script src="https://unpkg.com/@majidh1/jalalidatepicker@0.10.0/dist/jalalidatepicker.min.js"></script>
+<!-- بارگذاری مجدد کتابخانه با لینک‌های تست شده -->
+<link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
+<script src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const dateInput = document.getElementById("date_input");
+    // اجرای کد بلافاصله بعد از بارگذاری
+    window.onload = function() {
+        if (typeof jalaliDatepicker !== "undefined") {
+            jalaliDatepicker.startWatch({
+                minDate: "1405/05/24",
+                maxDate: "1405/06/31",
+                autoHide: true,
+                showTodayBtn: false,
+                showEmptyBtn: false,
+                initDate: "1405/05/24"
+            });
+        }
+    };
 
-    if (!dateInput || typeof jalaliDatepicker === "undefined") {
-        console.error("Jalali datepicker loaded incorrectly.");
-        return;
-    }
-
-    /*
-      بازه مجاز:
-      شروع: ۱۴۰۵/۰۵/۲۴
-      پایان: ۱۴۰۵/۰۶/۳۱
-    */
-    jalaliDatepicker.startWatch({
-        minDate: "1405/05/24",
-        maxDate: "1405/06/31",
-        showTodayBtn: false,
-        showEmptyBtn: false,
-        autoHide: true,
-        hideAfterChange: true
-    });
-
-    // جلوگیری از تایپ دستی
-    dateInput.addEventListener("keydown", function (event) {
-        event.preventDefault();
-    });
-
-    dateInput.addEventListener("paste", function (event) {
-        event.preventDefault();
-    });
-
-    dateInput.addEventListener("drop", function (event) {
-        event.preventDefault();
-    });
-});
+    // قفل کردن کیبورد برای این فیلد
+    const input = document.getElementById('date_input');
+    input.addEventListener('keydown', (e) => e.preventDefault());
+    input.addEventListener('paste', (e) => e.preventDefault());
 </script>
 
 <style>
+    /* اطمینان از اینکه تقویم زیر کارت‌ها نمی‌رود */
+    .jdp-container {
+        z-index: 10000 !important;
+    }
     #date_input {
         cursor: pointer;
-        caret-color: transparent;
-    }
-
-    .jdp-container,
-    .jdp {
-        z-index: 99999 !important;
-    }
-
-    .jdp-container {
-        direction: rtl !important;
-    }
-
-    .form-group {
-        position: relative;
-    }
-
-    select {
-        cursor: pointer;
+        background-color: #fff !important;
     }
 </style>
 {% endblock %}
