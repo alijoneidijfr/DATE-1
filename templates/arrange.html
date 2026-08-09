@@ -2,13 +2,6 @@
 
 {% block title %}انتخاب تاریخ و ساعت{% endblock %}
 
-{% block head %}
-<link
-    rel="stylesheet"
-    href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css"
->
-{% endblock %}
-
 {% block content %}
 <div class="hero">
     <div class="card romantic-card">
@@ -30,12 +23,12 @@
 
         <form action="{{ url_for('arrange') }}" method="POST">
             <div class="form-group">
-                <label for="date">تاریخ قرار</label>
+                <label for="date_input">تاریخ قرار</label>
 
                 <input
                     type="text"
-                    id="date"
                     name="date"
+                    id="date_input"
                     data-jdp
                     placeholder="برای انتخاب تاریخ کلیک کن"
                     autocomplete="off"
@@ -44,21 +37,21 @@
             </div>
 
             <div class="form-group">
-                <label for="time">ساعت قرار</label>
+                <label for="time_input">ساعت قرار</label>
 
-                <select id="time" name="time" required>
+                <select id="time_input" name="time" required>
                     <option value="" disabled selected>
                         ساعت را انتخاب کن
                     </option>
 
                     {% for hour in range(9, 22) %}
-                        <option value="{{ "%02d:00"|format(hour) }}">
-                            {{ "%02d:00"|format(hour) }}
-                        </option>
+                    <option value="{{ '%02d:00'|format(hour) }}">
+                        {{ '%02d:00'|format(hour) }}
+                    </option>
 
-                        <option value="{{ "%02d:30"|format(hour) }}">
-                            {{ "%02d:30"|format(hour) }}
-                        </option>
+                    <option value="{{ '%02d:30'|format(hour) }}">
+                        {{ '%02d:30'|format(hour) }}
+                    </option>
                     {% endfor %}
 
                     <option value="22:00">22:00</option>
@@ -72,13 +65,69 @@
     </div>
 </div>
 
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css"
+>
+
 <script src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
 
 <script>
+(function () {
+    const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
+
+    function convertPersianDigits(value) {
+        return value.replace(/[۰-۹]/g, function (digit) {
+            return persianDigits.indexOf(digit);
+        });
+    }
+
+    function getTodayJalali() {
+        const formatter = new Intl.DateTimeFormat(
+            "fa-IR-u-ca-persian",
+            {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit"
+            }
+        );
+
+        const parts = formatter.formatToParts(new Date());
+
+        const year = convertPersianDigits(
+            parts.find(part => part.type === "year").value
+        );
+
+        const month = convertPersianDigits(
+            parts.find(part => part.type === "month").value
+        );
+
+        const day = convertPersianDigits(
+            parts.find(part => part.type === "day").value
+        );
+
+        return {
+            year: year,
+            month: month.padStart(2, "0"),
+            day: day.padStart(2, "0")
+        };
+    }
+
+    const today = getTodayJalali();
+    const todayDay = Number(today.day);
+
+    /*
+       اگر امروز قبل از روز ۲۴ باشد، انتخاب از روز ۲۴ همین ماه شروع می‌شود.
+       اگر امروز روز ۲۴ یا بعد از آن باشد، انتخاب از امروز شروع می‌شود.
+    */
+    const minimumDay = Math.max(todayDay, 24);
+
+    const minDate =
+        `${today.year}/${today.month}/${String(minimumDay).padStart(2, "0")}`;
+
     jalaliDatepicker.startWatch({
-        minDate: "today",
-        showTodayBtn: true,
-        showEmptyBtn: true
+        minDate: minDate
     });
+})();
 </script>
 {% endblock %}
