@@ -32,7 +32,24 @@
 
         <p style="font-size: 0.9rem; color: var(--muted); margin-top: 25px; display: block; text-align: center;">🌸 ممنون از همراهی‌ات</p>
         
-        <a href="/" class="yes-btn full-width" style="margin-top: 20px; text-decoration: none;">بازگشت به خانه</a>
+        <button
+            type="button"
+            class="yes-btn full-width"
+            onclick="closePage()"
+        >
+            بازگشت به خانه
+        </button>
     </div>
 </div>
+
+<script>
+function closePage() {
+    window.close();
+
+    setTimeout(function () {
+        window.location.replace("about:blank");
+    }, 150);
+}
+</script>
+
 {% endblock %}
