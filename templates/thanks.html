@@ -1,66 +1,26 @@
 {% extends "base.html" %}
 
-{% block title %}قرارمون ثبت شد{% endblock %}
+{% block title %}قرار ثبت شد{% endblock %}
 
 {% block content %}
 <div class="hero">
-    <div class="card romantic-card">
-        <div class="heart">💖</div>
-        <div class="badge">همه‌چیز آماده است</div>
+    <div class="card romantic-card success-card">
+        <div class="success-icon">✨</div>
         <h1>قرارمون ثبت شد!</h1>
-        <p class="subtitle">
-            منتظر دیدنت هستم 💕
-        </p>
+        <p>منتظر دیدارت هستم.</p>
 
-        <div class="info-box">
-            <p>
-                📅 <strong>تاریخ:</strong> {{ date }}
-                {% if weekday %}
-                <span class="weekday">ــ {{ weekday }}</span>
-                {% endif %}
-            </p>
-            <p>⏰ <strong>ساعت:</strong> {{ time }}</p>
-            <p>☕ <strong>کافه:</strong> {{ cafe_name }}</p>
-            <p>📍 <strong>محله:</strong> {{ cafe_area }}</p>
-        </div>
-
-        {% if latitude and longitude %}
-        <p class="map-link-wrapper">
-            <a
-                class="yes-btn"
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://www.openstreetmap.org/?mlat={{ latitude }}&mlon={{ longitude }}#map=17/{{ latitude }}/{{ longitude }}"
-            >
-                مشاهده لوکیشن روی نقشه 📍
-            </a>
-        </p>
-        {% endif %}
+        <ul class="details-list">
+            <li>تاریخ: <strong>{{ date }}</strong> {% if weekday %}<span class="weekday">({{ weekday }})</span>{% endif %}</li>
+            <li>ساعت: <strong>{{ time }}</strong></li>
+            <li>کافه: <strong>{{ cafe_name }}</strong> ({{ cafe_area }})</li>
+        </ul>
 
         <div class="contact-box">
-            <h2>راه ارتباطی با من</h2>
-            
-            <a class="contact-number" href="tel:+989905991102">
-                +989905991102
-            </a>
-
-            <p class="instagram-text">
-                خوشحال می‌شوم اگر مایل بودی، توی اینستاگرام همراه من باشی و صفحه‌ام را دنبال کنی 🌸
-            </p>
-
-            <a
-                class="instagram-link"
-                href="https://www.instagram.com/a_joneidi.jfr/"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                @a_joneidi.jfr
-            </a>
+            <p>شماره تماس: <strong>09190118068</strong></p>
+            <p>آیدی اینستاگرام: <strong>@a_joneidi.jfr</strong></p>
         </div>
 
-        <p class="final-message">
-            ممنون از همراهی‌ات 💗
-        </p>
+        <a href="/" class="yes-btn full-width">بازگشت به خانه</a>
     </div>
 </div>
 {% endblock %}
