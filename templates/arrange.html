@@ -1,36 +1,84 @@
 {% extends "base.html" %}
+
+{% block title %}انتخاب تاریخ و ساعت{% endblock %}
+
+{% block head %}
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css"
+>
+{% endblock %}
+
 {% block content %}
 <div class="hero">
     <div class="card romantic-card">
-        <div class="badge">ای جانم! 💗</div>
-        <h1>خیلی خوشحالم که قبول کردی...</h1>
-        <p class="subtitle">حالا بگو چه روز و ساعتی برات بهتره؟</p>
+        <div class="heart">🥰</div>
+
+        <div class="badge">حالا زمانش رو انتخاب کنیم</div>
+
+        <h1>خیلی خوشحال شدم که قبول کردی!</h1>
+
+        <p class="subtitle">
+            چه روز و ساعتی برات بهتره؟
+        </p>
+
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
 
         <form action="{{ url_for('arrange') }}" method="POST">
             <div class="form-group">
-                <label>تاریخ مورد نظرت:</label>
-                <input type="text" name="date" id="date_input" data-jdp placeholder="انتخاب تاریخ" required>
+                <label for="date">تاریخ قرار</label>
+
+                <input
+                    type="text"
+                    id="date"
+                    name="date"
+                    data-jdp
+                    placeholder="برای انتخاب تاریخ کلیک کن"
+                    autocomplete="off"
+                    required
+                >
             </div>
 
             <div class="form-group">
-                <label>ساعت قرار:</label>
-                <select name="time" required>
-                    {% for h in range(9, 22) %}
-                    <option value="{{ h }}:00">{{ h }}:00</option>
-                    <option value="{{ h }}:30">{{ h }}:30</option>
+                <label for="time">ساعت قرار</label>
+
+                <select id="time" name="time" required>
+                    <option value="" disabled selected>
+                        ساعت را انتخاب کن
+                    </option>
+
+                    {% for hour in range(9, 22) %}
+                        <option value="{{ "%02d:00"|format(hour) }}">
+                            {{ "%02d:00"|format(hour) }}
+                        </option>
+
+                        <option value="{{ "%02d:30"|format(hour) }}">
+                            {{ "%02d:30"|format(hour) }}
+                        </option>
                     {% endfor %}
+
+                    <option value="22:00">22:00</option>
                 </select>
             </div>
 
-            <button type="submit" class="yes-btn" style="margin-top: 20px; width: 100%;">مرحله بعد: انتخاب کافه</button>
+            <button type="submit" class="yes-btn full-width">
+                مرحله بعد: پیشنهاد کافه ☕
+            </button>
         </form>
     </div>
 </div>
 
-<!-- اضافه کردن تقویم شمسی -->
-<link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
 <script src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
+
 <script>
-    jalaliDatepicker.startWatch();
+    jalaliDatepicker.startWatch({
+        minDate: "today",
+        showTodayBtn: true,
+        showEmptyBtn: true
+    });
 </script>
 {% endblock %}
