@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 
-{% block title %}انتخاب تاریخ و ساعت{% endblock %}
+{% block title %}انتخاب زمان قرار{% endblock %}
 
 {% block content %}
 <div class="hero">
     <div class="card romantic-card">
-        <div class="heart">🥰</div>
-
-        <div class="badge">حالا زمانش رو انتخاب کنیم</div>
-
-        <h1>خیلی خوشحال شدم که قبول کردی!</h1>
-
+        <div class="heart">📅</div>
+        
+        <div class="badge">برنامه‌ریزی قرار</div>
+        
+        <h1>چه زمانی مناسبته؟</h1>
+        
         <p class="subtitle">
-            چه روز و ساعتی برات بهتره؟
+            لطفاً تاریخ و ساعت مدنظرت رو انتخاب کن تا هماهنگ بشیم.
         </p>
 
         {% if error %}
@@ -23,111 +23,75 @@
 
         <form action="{{ url_for('arrange') }}" method="POST">
             <div class="form-group">
-                <label for="date_input">تاریخ قرار</label>
-
-                <input
-                    type="text"
-                    name="date"
-                    id="date_input"
-                    data-jdp
-                    placeholder="برای انتخاب تاریخ کلیک کن"
-                    autocomplete="off"
+                <label for="date_input">تاریخ قرار <span class="required-mark">*</span></label>
+                <input 
+                    type="text" 
+                    name="date" 
+                    id="date_input" 
+                    data-jdp 
+                    placeholder="برای انتخاب تاریخ کلیک کن" 
+                    autocomplete="off" 
                     required
                 >
             </div>
 
             <div class="form-group">
-                <label for="time_input">ساعت قرار</label>
-
-                <select id="time_input" name="time" required>
-                    <option value="" disabled selected>
-                        ساعت را انتخاب کن
-                    </option>
-
-                    {% for hour in range(9, 22) %}
-                    <option value="{{ '%02d:00'|format(hour) }}">
-                        {{ '%02d:00'|format(hour) }}
-                    </option>
-
-                    <option value="{{ '%02d:30'|format(hour) }}">
-                        {{ '%02d:30'|format(hour) }}
-                    </option>
-                    {% endfor %}
-
-                    <option value="22:00">22:00</option>
+                <label for="time">ساعت قرار <span class="required-mark">*</span></label>
+                <select name="time" id="time" required>
+                    <option value="" disabled selected>ساعت را انتخاب کن</option>
+                    <option value="16:00">۱۶:۰۰</option>
+                    <option value="16:30">۱۶:۳۰</option>
+                    <option value="17:00">۱۷:۰۰</option>
+                    <option value="17:30">۱۷:۳۰</option>
+                    <option value="18:00">۱۸:۰۰</option>
+                    <option value="18:30">۱۸:۳۰</option>
+                    <option value="19:00">۱۹:۰۰</option>
+                    <option value="19:30">۱۹:۳۰</option>
+                    <option value="20:00">۲۰:۰۰</option>
                 </select>
             </div>
 
             <button type="submit" class="yes-btn full-width">
-                مرحله بعد: پیشنهاد کافه ☕
+                مرحله بعد: انتخاب کافه 💕
             </button>
         </form>
     </div>
 </div>
 
-<link
-    rel="stylesheet"
-    href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css"
->
-
+<!-- Jalali Datepicker Assets -->
+<link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
 <script src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
 
 <script>
-(function () {
-    const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
-
-    function convertPersianDigits(value) {
-        return value.replace(/[۰-۹]/g, function (digit) {
-            return persianDigits.indexOf(digit);
-        });
-    }
-
-    function getTodayJalali() {
-        const formatter = new Intl.DateTimeFormat(
-            "fa-IR-u-ca-persian",
-            {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit"
-            }
-        );
-
-        const parts = formatter.formatToParts(new Date());
-
-        const year = convertPersianDigits(
-            parts.find(part => part.type === "year").value
-        );
-
-        const month = convertPersianDigits(
-            parts.find(part => part.type === "month").value
-        );
-
-        const day = convertPersianDigits(
-            parts.find(part => part.type === "day").value
-        );
-
-        return {
-            year: year,
-            month: month.padStart(2, "0"),
-            day: day.padStart(2, "0")
-        };
-    }
-
-    const today = getTodayJalali();
-    const todayDay = Number(today.day);
-
-    /*
-       اگر امروز قبل از روز ۲۴ باشد، انتخاب از روز ۲۴ همین ماه شروع می‌شود.
-       اگر امروز روز ۲۴ یا بعد از آن باشد، انتخاب از امروز شروع می‌شود.
-    */
-    const minimumDay = Math.max(todayDay, 24);
-
-    const minDate =
-        `${today.year}/${today.month}/${String(minimumDay).padStart(2, "0")}`;
-
+    // تنظیم دقیق بازه تاریخی: از ۲۴ مرداد ۱۴۰۵ تا ۳۱ شهریور ۱۴۰۵
     jalaliDatepicker.startWatch({
-        minDate: minDate
+        minDate: "1405/05/24",
+        maxDate: "1405/06/31",
+        showTodayBtn: false,
+        showEmptyBtn: false,
+        autoNext: true
     });
-})();
+
+    // جلوگیری از تایپ دستی در باکس تاریخ
+    document.getElementById('date_input').addEventListener('keydown', (e) => {
+        e.preventDefault();
+    });
 </script>
+
+<style>
+    /* استایل اختصاصی برای باکس انتخاب تاریخ و ساعت */
+    select {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e91e63' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: left 14px center;
+        background-size: 16px;
+    }
+
+    #date_input {
+        cursor: pointer;
+        caret-color: transparent;
+    }
+</style>
 {% endblock %}
