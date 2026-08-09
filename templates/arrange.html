@@ -1,22 +1,18 @@
 {% extends "base.html" %}
 
-{% block title %}انتخاب زمان قرار{% endblock %}
+{% block title %}انتخاب تاریخ و ساعت{% endblock %}
 
 {% block content %}
 <div class="hero">
     <div class="card romantic-card">
-        <div class="heart">📅</div>
-        
-        <div class="badge">برنامه‌ریزی قرار</div>
-        
+        <div class="heart">🥰</div>
+
+        <div class="badge">حالا زمانش رو انتخاب کنیم</div>
+
         <h1>خیلی خوشحال شدم که قبول کردی!</h1>
 
         <p class="subtitle">
-            حالا زمان و ساعتش رو انتخاب کنیم 💗
-        </p>
-
-        <p class="thanks-note">
-            مرسی که گفتی بله :)
+            چه روز و ساعتی برات بهتره؟
         </p>
 
         {% if error %}
@@ -27,22 +23,35 @@
 
         <form action="{{ url_for('arrange') }}" method="POST">
             <div class="form-group">
-                <label for="date_input">تاریخ قرار <span class="required-mark">*</span></label>
-                <input 
-                    type="text" 
-                    name="date" 
-                    id="date_input" 
-                    data-jdp 
-                    placeholder="برای انتخاب تاریخ کلیک کن" 
-                    autocomplete="off" 
+                <label for="date_input">
+                    تاریخ قرار <span class="required-mark">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    name="date"
+                    id="date_input"
+                    data-jdp
+                    data-jdp-only-date
+                    data-jdp-min-date="1405/05/24"
+                    data-jdp-max-date="1405/06/31"
+                    placeholder="برای انتخاب تاریخ کلیک کن"
+                    autocomplete="off"
+                    readonly
                     required
                 >
             </div>
 
             <div class="form-group">
-                <label for="time">ساعت قرار <span class="required-mark">*</span></label>
-                <select name="time" id="time" required>
-                    <option value="" disabled selected>ساعت را انتخاب کن</option>
+                <label for="time_input">
+                    ساعت قرار <span class="required-mark">*</span>
+                </label>
+
+                <select id="time_input" name="time" required>
+                    <option value="" disabled selected>
+                        ساعت را انتخاب کن
+                    </option>
+
                     <option value="09:00">۰۹:۰۰</option>
                     <option value="09:30">۰۹:۳۰</option>
                     <option value="10:00">۱۰:۰۰</option>
@@ -72,53 +81,73 @@
     </div>
 </div>
 
-<link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
-<script src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
+<!-- نسخه مشخص و پایدار کتابخانه -->
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/@majidh1/jalalidatepicker@0.10.0/dist/jalalidatepicker.min.css"
+>
+
+<script src="https://unpkg.com/@majidh1/jalalidatepicker@0.10.0/dist/jalalidatepicker.min.js"></script>
 
 <script>
-    // تنظیمات دقیق محدودیت تاریخ
+document.addEventListener("DOMContentLoaded", function () {
+    const dateInput = document.getElementById("date_input");
+
+    if (!dateInput || typeof jalaliDatepicker === "undefined") {
+        console.error("Jalali datepicker loaded incorrectly.");
+        return;
+    }
+
+    /*
+      بازه مجاز:
+      شروع: ۱۴۰۵/۰۵/۲۴
+      پایان: ۱۴۰۵/۰۶/۳۱
+    */
     jalaliDatepicker.startWatch({
         minDate: "1405/05/24",
         maxDate: "1405/06/31",
-        initDate: "1405/05/24",
-        hideAfterChange: true,
-        autoHide: true,
         showTodayBtn: false,
-        showEmptyBtn: false
+        showEmptyBtn: false,
+        autoHide: true,
+        hideAfterChange: true
     });
 
     // جلوگیری از تایپ دستی
-    document.getElementById('date_input').addEventListener('keydown', function(e) {
-        e.preventDefault();
+    dateInput.addEventListener("keydown", function (event) {
+        event.preventDefault();
     });
+
+    dateInput.addEventListener("paste", function (event) {
+        event.preventDefault();
+    });
+
+    dateInput.addEventListener("drop", function (event) {
+        event.preventDefault();
+    });
+});
 </script>
 
 <style>
-    .thanks-note {
-        margin-top: -4px;
-        margin-bottom: 18px;
-        color: #9b4b72;
-        font-size: 0.92rem;
-        font-weight: 600;
+    #date_input {
+        cursor: pointer;
+        caret-color: transparent;
     }
 
-    /* استایل تقویم برای هماهنگی با تم صورتی */
-    :root {
-        --jdp-main-color: #e91e63;
+    .jdp-container,
+    .jdp {
+        z-index: 99999 !important;
+    }
+
+    .jdp-container {
+        direction: rtl !important;
+    }
+
+    .form-group {
+        position: relative;
     }
 
     select {
         cursor: pointer;
-        appearance: none;
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e91e63' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: left 14px center;
-        background-size: 16px;
-    }
-
-    #date_input {
-        cursor: pointer;
-        caret-color: transparent;
     }
 </style>
 {% endblock %}
