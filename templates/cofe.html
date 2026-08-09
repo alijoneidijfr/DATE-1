@@ -6,10 +6,13 @@
 <div class="hero">
     <div class="card romantic-card cafe-card">
         <div class="heart">☕</div>
+
         <div class="badge">انتخاب مکان قرار</div>
+
         <h1>پیشنهادت برای کافه چیه؟</h1>
+
         <p class="subtitle">
-            لطفاً نام کافه و محله را وارد کن. مشخص کردن لوکیشن روی نقشه دلخواه است.
+            نام کافه و محله را وارد کن؛ انتخاب لوکیشن روی نقشه اختیاری است.
         </p>
 
         {% if error %}
@@ -26,81 +29,5 @@
 
             <div class="cafe-fields">
                 <div class="form-group">
-                    <label for="cafe_name">نام کافه <span style="color: var(--pink);">*</span></label>
-                    <input
-                        id="cafe_name"
-                        type="text"
-                        name="cafe_name"
-                        placeholder="مثال: کافه لند"
-                        required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="cafe_area">محله کافه <span style="color: var(--pink);">*</span></label>
-                    <input
-                        id="cafe_area"
-                        type="text"
-                        name="cafe_area"
-                        placeholder="مثال: ولیعصر"
-                        required
-                    >
-                </div>
-            </div>
-
-            <div class="cafe-box">
-                <p class="map-title">
-                    لوکیشن دقیق روی نقشه
-                    <span class="optional-text">(اختیاری)</span>
-                </p>
-                <p class="map-hint">
-                    در صورت تمایل، نقطه روی نقشه را کلیک کنید 📍
-                </p>
-                <div id="map"></div>
-            </div>
-
-            <div class="phone-box light-field">
-                <label for="phone">شماره تماس جهت هماهنگی</label>
-                <input
-                    id="phone"
-                    type="tel"
-                    name="phone"
-                    value="+989190118068"
-                    required
-                >
-                <small>می‌توانی این شماره را به شمارهٔ خودت تغییر دهی.</small>
-            </div>
-
-            <div class="confirm-box">
-                <label class="checkbox-label">
-                    <input type="checkbox" required>
-                    <span>اطلاعات بالا را تأیید می‌کنم.</span>
-                </label>
-            </div>
-
-            <button type="submit" class="yes-btn full-width">
-                ثبت نهایی قرار 💕
-            </button>
-        </form>
-    </div>
-</div>
-
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-    const map = L.map("map").setView([35.6892, 51.3890], 12);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap contributors"
-    }).addTo(map);
-
-    let marker = null;
-    map.on("click", function (event) {
-        if (marker) {
-            map.removeLayer(marker);
-        }
-        marker = L.marker(event.latlng).addTo(map);
-        document.getElementById("lat").value = event.latlng.lat.toFixed(6);
-        document.getElementById("lng").value = event.latlng.lng.toFixed(6);
-    });
-</script>
-{% endblock %}
+                    <label for="cafe_name">
+                        نام کافه <span 
