@@ -1,21 +1,27 @@
 {% extends "base.html" %}
+
+{% block title %}قرارمون ثبت شد{% endblock %}
+
 {% block content %}
 <div class="hero">
     <div class="card romantic-card">
         <div class="heart">💖</div>
         <h1>قرارمون ثبت شد!</h1>
-        <p>ممنون که قبول کردی. اطلاعات قرار:</p>
-        <div class="info-box" style="text-align: right; background: #fff0f5; padding: 15px; border-radius: 10px;">
-            <p>📅 تاریخ: {{ date }}</p>
-            <p>⏰ ساعت: {{ time }}</p>
-            {% if cafe_name %}<p>☕ کافه: {{ cafe_name }}</p>{% endif %}
+        <p class="subtitle">منتظر این قرار قشنگ هستم 💕</p>
+
+        <div class="info-box">
+            <p>📅 <strong>تاریخ:</strong> {{ date }}</p>
+            <p>⏰ <strong>ساعت:</strong> {{ time }}</p>
+            {% if cafe_name %}<p>☕ <strong>کافه:</strong> {{ cafe_name }}</p>{% endif %}
+            {% if cafe_area %}<p>📍 <strong>محله:</strong> {{ cafe_area }}</p>{% endif %}
         </div>
-        
-        <div class="contact-box" style="margin-top: 20px;">
-            <p>شماره من برای هماهنگی:</p>
-            <a href="tel:+989905991102" style="font-weight: bold; color: #d63384;">09905991102</a>
-            <p style="margin-top: 10px;">اینستاگرام من:</p>
-            <a href="https://www.instagram.com/a_joneidi.jfr/" target="_blank" style="color: #d63384; font-weight: bold;">@a_joneidi.jfr</a>
+
+        <div class="contact-box">
+            <h2>راه ارتباطی</h2>
+            <p>خوشحال می‌شم اگه مایل بودی، توی اینستاگرام همراه من باشی و صفحه‌ام رو دنبال کنی 🌸</p>
+            <a class="instagram-link" href="https://www.instagram.com/ali_joneidi.jfr/" target="_blank">
+                @ali_joneidi.jfr
+            </a>
         </div>
     </div>
 </div>
