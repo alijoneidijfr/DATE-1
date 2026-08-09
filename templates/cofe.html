@@ -39,6 +39,7 @@
                         id="cafe_name"
                         type="text"
                         name="cafe_name"
+                        placeholder="مثلاً کافه نیلوفر"
                         required
                     >
                 </div>
@@ -53,6 +54,7 @@
                         id="cafe_area"
                         type="text"
                         name="cafe_area"
+                        placeholder="مثلاً جردن"
                         required
                     >
                 </div>
@@ -85,17 +87,14 @@
                 >
 
                 <small>
-                    شماره‌ای که از قبل داشتم درسته دیگه؟ اگر لازم بود می‌تونی تغییرش بدی.
+                    اگه لازمه می‌تونی تغییرش بدی :)
                 </small>
             </div>
 
             <div class="confirm-box">
                 <label class="checkbox-label">
                     <input type="checkbox" required>
-
-                    <span>
-                        اطلاعات واردشده را تأیید می‌کنم.
-                    </span>
+                    <span>اطلاعات واردشده را تأیید می‌کنم.</span>
                 </label>
             </div>
 
@@ -133,7 +132,7 @@
         marker = L.marker(event.latlng).addTo(map);
 
         document.getElementById("lat").value =
-            event.latlng.lat.toFixed(6);
+            eve.latlng.lat.toFixed(6);
 
         document.getElementById("lng").value =
             event.latlng.lng.toFixed(6);
