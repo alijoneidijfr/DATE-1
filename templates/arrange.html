@@ -23,9 +23,7 @@
 
         <form action="{{ url_for('arrange') }}" method="POST">
             <div class="form-group">
-                <label for="date_input">
-                    تاریخ قرار <span class="required-mark">*</span>
-                </label>
+                <label for="date_input">تاریخ قرار</label>
 
                 <input
                     type="text"
@@ -39,33 +37,24 @@
             </div>
 
             <div class="form-group">
-                <label for="time_input">
-                    ساعت قرار <span class="required-mark">*</span>
-                </label>
+                <label for="time_input">ساعت قرار</label>
 
                 <select id="time_input" name="time" required>
                     <option value="" disabled selected>
                         ساعت را انتخاب کن
                     </option>
-                    <option value="09:00">۰۹:۰۰</option>
-                    <option value="09:30">۰۹:۳۰</option>
-                    <option value="10:00">۱۰:۰۰</option>
-                    <option value="10:30">۱۰:۳۰</option>
-                    <option value="11:00">۱۱:۰۰</option>
-                    <option value="11:30">۱۱:۳۰</option>
-                    <option value="12:00">۱۲:۰۰</option>
-                    <option value="12:30">۱۲:۳۰</option>
-                    <option value="13:00">۱۳:۰۰</option>
-                    <option value="13:30">۱۳:۳۰</option>
-                    <option value="14:00">۱۴:۰۰</option>
-                    <option value="14:30">۱۴:۳۰</option>
-                    <option value="15:00">۱۵:۰۰</option>
-                    <option value="15:30">۱۵:۳۰</option>
-                    <option value="16:00">۱۶:۰۰</option>
-                    <option value="16:30">۱۶:۳۰</option>
-                    <option value="17:00">۱۷:۰۰</option>
-                    <option value="17:30">۱۷:۳۰</option>
-                    <option value="18:00">۱۸:۰۰</option>
+
+                    {% for hour in range(9, 22) %}
+                    <option value="{{ '%02d:00'|format(hour) }}">
+                        {{ '%02d:00'|format(hour) }}
+                    </option>
+
+                    <option value="{{ '%02d:30'|format(hour) }}">
+                        {{ '%02d:30'|format(hour) }}
+                    </option>
+                    {% endfor %}
+
+                    <option value="22:00">22:00</option>
                 </select>
             </div>
 
@@ -76,39 +65,17 @@
     </div>
 </div>
 
-<!-- بارگذاری مجدد کتابخانه با لینک‌های تست شده -->
-<link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css"
+>
+
 <script src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
 
 <script>
-    // اجرای کد بلافاصله بعد از بارگذاری
-    window.onload = function() {
-        if (typeof jalaliDatepicker !== "undefined") {
-            jalaliDatepicker.startWatch({
-                minDate: "1405/05/24",
-                maxDate: "1405/06/31",
-                autoHide: true,
-                showTodayBtn: false,
-                showEmptyBtn: false,
-                initDate: "1405/05/24"
-            });
-        }
-    };
-
-    // قفل کردن کیبورد برای این فیلد
-    const input = document.getElementById('date_input');
-    input.addEventListener('keydown', (e) => e.preventDefault());
-    input.addEventListener('paste', (e) => e.preventDefault());
+    jalaliDatepicker.startWatch({
+        minDate: "1405/05/24",
+        maxDate: "1405/06/31"
+    });
 </script>
-
-<style>
-    /* اطمینان از اینکه تقویم زیر کارت‌ها نمی‌رود */
-    .jdp-container {
-        z-index: 10000 !important;
-    }
-    #date_input {
-        cursor: pointer;
-        background-color: #fff !important;
-    }
-</style>
 {% endblock %}
