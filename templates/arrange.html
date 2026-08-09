@@ -1,497 +1,252 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>تنظیم قرار</title>
+{% block title %}انتخاب تاریخ و ساعت{% endblock %}
 
-    <style>
-        * {
-            box-sizing: border-box;
+{% block content %}
+
+<style>
+    .arrange-page {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px 10px;
+        background: linear-gradient(135deg, #ffe8f0, #fff7fa);
+        direction: rtl;
+        font-family: Tahoma, Arial, sans-serif;
+    }
+
+    .arrange-card {
+        width: 100%;
+        max-width: 375px;
+        min-height: 430px;
+        padding: 25px 24px 24px;
+        background: #ffffff;
+        border-radius: 22px;
+        box-shadow: 0 8px 25px rgba(190, 86, 117, 0.16);
+        text-align: right;
+    }
+
+    .arrange-emoji {
+        text-align: center;
+        font-size: 38px;
+        line-height: 1;
+        margin-bottom: 15px;
+    }
+
+    .arrange-badge {
+        width: fit-content;
+        margin: 0 auto 16px;
+        padding: 6px 14px;
+        border-radius: 20px;
+        background: #fce8f0;
+        color: #d6336c;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .arrange-title {
+        margin: 0;
+        color: #762247;
+        text-align: center;
+        font-size: 19px;
+        line-height: 2;
+        font-weight: bold;
+    }
+
+    .arrange-subtitle {
+        margin: 6px 0 25px;
+        color: #999096;
+        text-align: center;
+        font-size: 12px;
+    }
+
+    .arrange-form-group {
+        margin-bottom: 17px;
+    }
+
+    .arrange-form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #762247;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .arrange-form-group input,
+    .arrange-form-group select {
+        width: 100%;
+        height: 47px;
+        padding: 0 13px;
+        border: 1px solid #e9bdcf;
+        border-radius: 11px;
+        outline: none;
+        background: #ffffff;
+        color: #6f6870;
+        font-family: Tahoma, Arial, sans-serif;
+        font-size: 13px;
+        transition: 0.2s;
+    }
+
+    .arrange-form-group input::placeholder {
+        color: #b8afb4;
+    }
+
+    .arrange-form-group input:focus,
+    .arrange-form-group select:focus {
+        border-color: #dc4f80;
+        box-shadow: 0 0 0 3px rgba(220, 79, 128, 0.1);
+    }
+
+    .arrange-form-group select {
+        cursor: pointer;
+        direction: rtl;
+    }
+
+    .arrange-error {
+        margin-bottom: 15px;
+        padding: 9px;
+        border-radius: 9px;
+        background: #fff0f3;
+        color: #c52d5f;
+        text-align: center;
+        font-size: 12px;
+    }
+
+    .arrange-submit {
+        width: 100%;
+        height: 43px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 25px;
+        background: linear-gradient(90deg, #e71969, #d71362);
+        color: #ffffff;
+        font-family: Tahoma, Arial, sans-serif;
+        font-size: 13px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 7px 14px rgba(215, 19, 98, 0.2);
+        transition: 0.2s;
+    }
+
+    .arrange-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 9px 18px rgba(215, 19, 98, 0.3);
+    }
+
+    @media (max-width: 400px) {
+        .arrange-page {
+            padding: 8px;
         }
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: Tahoma, Arial, sans-serif;
-            background: linear-gradient(135deg, #ffe5ed, #fff7fa);
-            color: #5b2738;
+        .arrange-card {
+            padding: 24px 20px;
         }
 
-        .page {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 25px 15px;
-        }
-
-        .card {
-            width: 100%;
-            max-width: 520px;
-            background: rgba(255, 255, 255, 0.96);
-            border-radius: 25px;
-            padding: 30px 25px;
-            box-shadow: 0 12px 35px rgba(190, 86, 117, 0.2);
-        }
-
-        .heart {
-            text-align: center;
-            font-size: 48px;
-            margin-bottom: 5px;
-        }
-
-        h1 {
-            text-align: center;
-            color: #c94d78;
-            margin: 8px 0;
-            font-size: 26px;
-        }
-
-        .description {
-            text-align: center;
-            color: #8c5367;
-            line-height: 1.9;
-            margin-bottom: 25px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #713247;
-        }
-
-        select,
-        input {
-            width: 100%;
-            height: 48px;
-            border: 2px solid #f0b6c8;
-            border-radius: 13px;
-            padding: 0 14px;
-            font-family: inherit;
-            font-size: 15px;
-            color: #632c40;
-            background: #fffafd;
-            outline: none;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        select:focus,
-        input:focus {
-            border-color: #d85b86;
-            box-shadow: 0 0 0 3px rgba(216, 91, 134, 0.12);
-        }
-
-        .date-wrapper {
-            position: relative;
-        }
-
-        .calendar-button {
-            position: absolute;
-            left: 9px;
-            top: 7px;
-            height: 34px;
-            width: 38px;
-            border: none;
-            border-radius: 9px;
-            background: #ffe0ea;
-            color: #c13f6c;
-            font-size: 19px;
-            cursor: pointer;
-        }
-
-        .calendar {
-            display: none;
-            margin-top: 10px;
-            padding: 15px;
-            border: 1px solid #f2bfce;
-            border-radius: 16px;
-            background: #fff;
-            box-shadow: 0 8px 20px rgba(190, 86, 117, 0.15);
-        }
-
-        .calendar.show {
-            display: block;
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 13px;
-        }
-
-        .calendar-header button {
-            border: none;
-            background: #ffe0ea;
-            color: #bd3e6a;
-            border-radius: 8px;
-            width: 35px;
-            height: 32px;
-            cursor: pointer;
+        .arrange-title {
             font-size: 18px;
         }
+    }
+</style>
 
-        .calendar-title {
-            font-weight: bold;
-            color: #b53966;
-        }
+<div class="arrange-page">
+    <div class="arrange-card">
 
-        .weekdays,
-        .days {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            text-align: center;
-        }
+        <div class="arrange-emoji">🥰</div>
 
-        .weekdays div {
-            font-size: 11px;
-            color: #a05d73;
-            padding: 5px 0;
-        }
+        <div class="arrange-badge">
+            حالا زمانش رو انتخاب کنیم
+        </div>
 
-        .day {
-            border: none;
-            min-height: 35px;
-            border-radius: 8px;
-            background: #fff3f7;
-            color: #713247;
-            cursor: pointer;
-            font-family: inherit;
-        }
+        <h1 class="arrange-title">
+            خیلی خوشحال شدم که قبول کردی!
+        </h1>
 
-        .day:hover {
-            background: #ffd1df;
-        }
-
-        .day.selected {
-            background: #d65380;
-            color: white;
-            font-weight: bold;
-        }
-
-        .day.disabled {
-            background: #f7f7f7;
-            color: #c9c9c9;
-            cursor: not-allowed;
-        }
-
-        .submit-button {
-            width: 100%;
-            height: 52px;
-            border: none;
-            border-radius: 15px;
-            background: linear-gradient(135deg, #d65380, #bd3d6b);
-            color: white;
-            font-family: inherit;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-top: 8px;
-        }
-
-        .submit-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 7px 15px rgba(189, 61, 107, 0.25);
-        }
-
-        .hint {
-            font-size: 12px;
-            color: #a16678;
-            margin-top: 7px;
-        }
-
-        @media (max-width: 400px) {
-            .card {
-                padding: 25px 17px;
-            }
-
-            h1 {
-                font-size: 22px;
-            }
-
-            .day {
-                min-height: 32px;
-                font-size: 12px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="page">
-    <main class="card">
-
-        <div class="heart">💖</div>
-
-        <h1>قرارمون رو تنظیم کنیم</h1>
-
-        <p class="description">
-            لطفاً یک تاریخ و ساعت مناسب انتخاب کن تا قرار قشنگمون رو هماهنگ کنیم 🌸
+        <p class="arrange-subtitle">
+            چه روز و ساعتی برات بهتره؟
         </p>
 
-        <form method="POST" action="{{ url_for('arrange') }}">
+        {% if error %}
+        <div class="arrange-error">
+            {{ error }}
+        </div>
+        {% endif %}
 
-            <div class="form-group">
-                <label for="date">تاریخ قرار</label>
+        <form action="{{ url_for('arrange') }}" method="POST">
 
-                <div class="date-wrapper">
-                    <input
-                        type="text"
-                        id="date"
-                        name="date"
-                        placeholder="انتخاب تاریخ"
-                        readonly
-                        required
-                    >
+            <div class="arrange-form-group">
+                <label for="date_input">
+                    تاریخ قرار
+                </label>
 
-                    <button
-                        type="button"
-                        class="calendar-button"
-                        id="calendarButton"
-                        aria-label="باز کردن تقویم"
-                    >
-                        📅
-                    </button>
-                </div>
-
-                <div class="hint">
-                    بازه مجاز: ۲۴ مرداد تا ۳۱ شهریور ۱۴۰۵
-                </div>
-
-                <div class="calendar" id="calendar">
-
-                    <div class="calendar-header">
-                        <button type="button" id="previousMonth">‹</button>
-                        <div class="calendar-title" id="calendarTitle"></div>
-                        <button type="button" id="nextMonth">›</button>
-                    </div>
-
-                    <div class="weekdays">
-                        <div>ش</div>
-                        <div>ی</div>
-                        <div>د</div>
-                        <div>س</div>
-                        <div>چ</div>
-                        <div>پ</div>
-                        <div>ج</div>
-                    </div>
-
-                    <div class="days" id="calendarDays"></div>
-                </div>
+                <input
+                    type="text"
+                    name="date"
+                    id="date_input"
+                    data-jdp
+                    data-jdp-min-date="1405/05/24"
+                    data-jdp-max-date="1405/06/06"
+                    placeholder="برای انتخاب تاریخ کلیک کن"
+                    autocomplete="off"
+                    required
+                >
             </div>
 
-            <div class="form-group">
-                <label for="time">ساعت قرار</label>
+            <div class="arrange-form-group">
+                <label for="time_input">
+                    ساعت قرار
+                </label>
 
-                <select id="time" name="time" required>
-                    <option value="">انتخاب ساعت</option>
-                    <option value="09:00">۰۹:۰۰</option>
-                    <option value="09:30">۰۹:۳۰</option>
-                    <option value="10:00">۱۰:۰۰</option>
-                    <option value="10:30">۱۰:۳۰</option>
-                    <option value="11:00">۱۱:۰۰</option>
-                    <option value="11:30">۱۱:۳۰</option>
-                    <option value="12:00">۱۲:۰۰</option>
-                    <option value="12:30">۱۲:۳۰</option>
-                    <option value="13:00">۱۳:۰۰</option>
-                    <option value="13:30">۱۳:۳۰</option>
-                    <option value="14:00">۱۴:۰۰</option>
-                    <option value="14:30">۱۴:۳۰</option>
-                    <option value="15:00">۱۵:۰۰</option>
-                    <option value="15:30">۱۵:۳۰</option>
-                    <option value="16:00">۱۶:۰۰</option>
-                    <option value="16:30">۱۶:۳۰</option>
-                    <option value="17:00">۱۷:۰۰</option>
-                    <option value="17:30">۱۷:۳۰</option>
-                    <option value="18:00">۱۸:۰۰</option>
-                    <option value="18:30">۱۸:۳۰</option>
-                    <option value="19:00">۱۹:۰۰</option>
-                    <option value="19:30">۱۹:۳۰</option>
-                    <option value="20:00">۲۰:۰۰</option>
-                    <option value="20:30">۲۰:۳۰</option>
-                    <option value="21:00">۲۱:۰۰</option>
-                    <option value="21:30">۲۱:۳۰</option>
-                    <option value="22:00">۲۲:۰۰</option>
+                <select
+                    id="time_input"
+                    name="time"
+                    required
+                >
+                    <option value="" disabled selected>
+                        ساعت را انتخاب کن
+                    </option>
+
+                    {% for hour in range(9, 22) %}
+                    <option value="{{ '%02d:00'|format(hour) }}">
+                        {{ '%02d:00'|format(hour) }}
+                    </option>
+
+                    <option value="{{ '%02d:30'|format(hour) }}">
+                        {{ '%02d:30'|format(hour) }}
+                    </option>
+                    {% endfor %}
+
+                    <option value="22:00">22:00</option>
                 </select>
             </div>
 
-            <button type="submit" class="submit-button">
-                ثبت زمان قرار 💕
+            <button type="submit" class="arrange-submit">
+                مرحله بعد: پیشنهاد کافه ☕
             </button>
 
         </form>
-    </main>
+    </div>
 </div>
 
+<!-- اگر فایل‌های Datepicker را قبلاً در base.html داری، این دو خط را اضافه نکن -->
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css"
+>
+
+<script src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
+
 <script>
-    const dateInput = document.getElementById("date");
-    const calendar = document.getElementById("calendar");
-    const calendarButton = document.getElementById("calendarButton");
-    const calendarDays = document.getElementById("calendarDays");
-    const calendarTitle = document.getElementById("calendarTitle");
-    const previousMonth = document.getElementById("previousMonth");
-    const nextMonth = document.getElementById("nextMonth");
-
-    const months = [
-        "فروردین",
-        "اردیبهشت",
-        "خرداد",
-        "تیر",
-        "مرداد",
-        "شهریور",
-        "مهر",
-        "آبان",
-        "آذر",
-        "دی",
-        "بهمن",
-        "اسفند"
-    ];
-
-    const persianNumbers = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
-
-    function toPersianNumber(number) {
-        return String(number).replace(/[0-9]/g, digit => persianNumbers[digit]);
-    }
-
-    /*
-       بازه مجاز:
-       از ۱۴۰۵/۰۵/۲۴
-       تا ۱۴۰۵/۰۶/۳۱
-    */
-
-    let currentMonth = 5;
-    let currentYear = 1405;
-
-    function jalaliDayOfWeek(year, month, day) {
-        /*
-          ۱۴۰۵/۰۵/۲۴ برابر شنبه است.
-          از این تاریخ برای محاسبه روزهای بعد استفاده می‌کنیم.
-        */
-
-        const baseYear = 1405;
-        const baseMonth = 5;
-        const baseDay = 24;
-        const baseWeekDay = 0; // شنبه
-
-        let difference = 0;
-
-        if (month === baseMonth) {
-            difference = day - baseDay;
-        } else if (month === 6) {
-            difference = 6 + day;
-        }
-
-        return (baseWeekDay + difference) % 7;
-    }
-
-    function isValidDate(month, day) {
-        if (month === 5 && day >= 24) {
-            return true;
-        }
-
-        if (month === 6 && day <= 31) {
-            return true;
-        }
-
-        return false;
-    }
-
-    function renderCalendar() {
-        calendarTitle.textContent =
-            `${months[currentMonth - 1]} ${toPersianNumber(currentYear)}`;
-
-        calendarDays.innerHTML = "";
-
-        let firstDay;
-        let daysInMonth;
-
-        if (currentMonth === 5) {
-            firstDay = jalaliDayOfWeek(currentYear, 5, 1);
-            daysInMonth = 31;
-        } else {
-            firstDay = jalaliDayOfWeek(currentYear, 6, 1);
-            daysInMonth = 31;
-        }
-
-        for (let i = 0; i < firstDay; i++) {
-            const emptyDay = document.createElement("div");
-            calendarDays.appendChild(emptyDay);
-        }
-
-        for (let day = 1; day <= daysInMonth; day++) {
-            const button = document.createElement("button");
-
-            button.type = "button";
-            button.className = "day";
-            button.textContent = toPersianNumber(day);
-
-            if (!isValidDate(currentMonth, day)) {
-                button.classList.add("disabled");
-                button.disabled = true;
-            }
-
-            const value =
-                `${currentYear}/${String(currentMonth).padStart(2, "0")}/${String(day).padStart(2, "0")}`;
-
-            if (dateInput.value === value) {
-                button.classList.add("selected");
-            }
-
-            button.addEventListener("click", function () {
-                dateInput.value = value;
-                calendar.classList.remove("show");
-                renderCalendar();
+    document.addEventListener("DOMContentLoaded", function () {
+        if (typeof jalaliDatepicker !== "undefined") {
+            jalaliDatepicker.startWatch({
+                minDate: "1405/05/24",
+                maxDate: "1405/06/06"
             });
-
-            calendarDays.appendChild(button);
-        }
-
-        previousMonth.disabled = currentMonth === 5;
-        nextMonth.disabled = currentMonth === 6;
-    }
-
-    calendarButton.addEventListener("click", function () {
-        calendar.classList.toggle("show");
-        renderCalendar();
-    });
-
-    previousMonth.addEventListener("click", function () {
-        if (currentMonth > 5) {
-            currentMonth--;
-            renderCalendar();
+        } else {
+            console.error("کتابخانه Jalali Datepicker بارگذاری نشده است.");
         }
     });
-
-    nextMonth.addEventListener("click", function () {
-        if (currentMonth < 6) {
-            currentMonth++;
-            renderCalendar();
-        }
-    });
-
-    document.addEventListener("click", function (event) {
-        const clickedInsideCalendar =
-            calendar.contains(event.target) ||
-            calendarButton.contains(event.target);
-
-        if (!clickedInsideCalendar) {
-            calendar.classList.remove("show");
-        }
-    });
-
-    renderCalendar();
 </script>
 
-</body>
-</html>
+{% endblock %}
