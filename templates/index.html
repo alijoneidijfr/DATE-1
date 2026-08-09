@@ -1,77 +1,27 @@
 {% extends "base.html" %}
-
-{% block title %}یک سؤال مهم{% endblock %}
-
+{% block title %}دعوت به قرار{% endblock %}
 {% block content %}
 <div class="hero">
     <div class="card romantic-card">
-        <div class="heart">💗</div>
-
+        <div class="heart">💖</div>
         <div class="badge">یک دعوت خاص</div>
-
         <h1>با من میای سرِ قرار؟</h1>
-
-        <p class="subtitle">
-            یه قرار قشنگ می‌تونه شروع یه خاطره قشنگ‌تر باشه :)
-        </p>
-
-        <div class="button-row">
-            <button id="yesBtn" class="yes-btn" type="button">
-                بله 💕
-            </button>
-
-            <button id="noBtn" class="no-btn" type="button">
-                نه
-            </button>
+        <p class="subtitle">یه قرار قشنگ می‌تونه شروع یه خاطره قشنگ‌تر باشه :)</p>
+        <div class="actions" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 30px;">
+            <button id="noBtn" class="no-btn">نه</button>
+            <a href="/arrange" class="yes-btn" style="text-decoration: none;">بله 💕</a>
         </div>
-
-        <p id="message" class="message"></p>
     </div>
 </div>
-
 <script>
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const message = document.getElementById("message");
-
-    let yesScale = 1;
-    let noCount = 0;
-
-    const messages = [
-        "یه بار دیگه فکر کن 😌",
-        "مطمئنی؟ قرارمون می‌تونه خیلی خوب بشه 💗",
-        "بله داره بزرگ‌تر می‌شه 🙂",
-        "فکر کنم ته دلت می‌خوای بگی بله!",
-        "دیگه انتخاب خیلی آسونه 💕"
-    ];
-
-    noBtn.addEventListener("click", function () {
-        noCount++;
-
-        yesScale = Math.min(1 + noCount * 0.18, 3.2);
-
-        yesBtn.style.transform = `scale(${yesScale})`;
-
-        noBtn.style.transform = `scale(${Math.max(
-            1 - noCount * 0.08,
-            0.65
-        )})`;
-
-        noBtn.style.opacity = Math.max(
-            1 - noCount * 0.1,
-            0.45
-        );
-
-        message.textContent =
-            messages[Math.min(noCount - 1, messages.length - 1)];
-
-        if (noCount >= 8) {
-            noBtn.textContent = "شاید بله؟";
-        }
-    });
-
-    yesBtn.addEventListener("click", function () {
-        window.location.href = "{{ url_for('arrange') }}";
+    const noBtn = document.getElementById('noBtn');
+    noBtn.addEventListener('mouseover', () => {
+        noBtn.style.position = 'absolute';
+        noBtn.style.left = Math.random() * (window.innerWidth - noBtn.offsetWidth) + 'px';
+        noBtn.style.top = Math.random() * (window.innerHeight - noBtn.offsetHeight) + 'px';
     });
 </script>
+<style>
+    .no-btn { padding: 8px 16px; background: #f0f0f0; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; color: #666; }
+</style>
 {% endblock %}
