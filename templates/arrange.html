@@ -23,38 +23,173 @@
 
         <form action="{{ url_for('arrange') }}" method="POST">
             <div class="form-group">
-                <label for="date_input">تاریخ قرار</label>
+                <label>
+                    تاریخ قرار <span class="required-mark">*</span>
+                </label>
 
+                <!-- این input مقدار انتخاب‌شده را برای Flask ارسال می‌کند -->
                 <input
-                    type="text"
+                    type="hidden"
                     name="date"
-                    id="date_input"
-                    data-jdp
-                    placeholder="برای انتخاب تاریخ کلیک کن"
-                    autocomplete="off"
+                    id="selected_date"
                     required
                 >
+
+                <div class="date-table-wrapper">
+                    <table class="date-table">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <button type="button" class="date-btn"
+                                            data-date="1405/05/24">
+                                        <span>۲۴</span>
+                                        <small>مرداد</small>
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <button type="button" class="date-btn"
+                                            data-date="1405/05/25">
+                                        <span>۲۵</span>
+                                        <small>مرداد</small>
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <button type="button" class="date-btn"
+                                            data-date="1405/05/26">
+                                        <span>۲۶</span>
+                                        <small>مرداد</small>
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <button type="button" class="date-btn"
+                                            data-date="1405/05/27">
+                                        <span>۲۷</span>
+                                        <small>مرداد</small>
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <button type="button" class="date-btn"
+                                            data-date="1405/05/28">
+                                        <span>۲۸</span>
+                                        <small>مرداد</small>
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <button type="button" class="date-btn"
+                                            data-date="1405/05/29">
+                                        <span>۲۹</span>
+                                        <small>مرداد</small>
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <button type="button" class="date-btn"
+                                            data-date="1405/05/30">
+                                        <span>۳۰</span>
+                                        <small>مرداد</small>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <button type="button" class="date-btn"
+                                            data-date="1405/05/31">
+                                        <span>۳۱</span>
+                                        <small>مرداد</small>
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <button type="button" class="date-btn"
+                                            data-date="1405/06/01">
+                                        <span>۱</span>
+                                        <small>شهریور</small>
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <button type="button" class="date-btn"
+                                            data-date="1405/06/02">
+                                        <span>۲</span>
+                                        <small>شهریور</small>
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <button type="button" class="date-btn"
+                                            data-date="1405/06/03">
+                                        <span>۳</span>
+                                        <small>شهریور</small>
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <button type="button" class="date-btn"
+                                            data-date="1405/06/04">
+                                        <span>۴</span>
+                                        <small>شهریور</small>
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <button type="button" class="date-btn"
+                                            data-date="1405/06/05">
+                                        <span>۵</span>
+                                        <small>شهریور</small>
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <button type="button" class="date-btn"
+                                            data-date="1405/06/06">
+                                        <span>۶</span>
+                                        <small>شهریور</small>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p id="date-help" class="date-help">
+                        لطفاً یک تاریخ را انتخاب کن 💗
+                    </p>
+                </div>
             </div>
 
             <div class="form-group">
-                <label for="time_input">ساعت قرار</label>
+                <label for="time_input">
+                    ساعت قرار <span class="required-mark">*</span>
+                </label>
 
                 <select id="time_input" name="time" required>
                     <option value="" disabled selected>
                         ساعت را انتخاب کن
                     </option>
-
-                    {% for hour in range(9, 18) %}
-                    <option value="{{ '%02d:00'|format(hour) }}">
-                        {{ '%02d:00'|format(hour) }}
-                    </option>
-
-                    <option value="{{ '%02d:30'|format(hour) }}">
-                        {{ '%02d:30'|format(hour) }}
-                    </option>
-                    {% endfor %}
-
-                    <option value="18:00">18:00</option>
+                    <option value="09:00">۰۹:۰۰</option>
+                    <option value="09:30">۰۹:۳۰</option>
+                    <option value="10:00">۱۰:۰۰</option>
+                    <option value="10:30">۱۰:۳۰</option>
+                    <option value="11:00">۱۱:۰۰</option>
+                    <option value="11:30">۱۱:۳۰</option>
+                    <option value="12:00">۱۲:۰۰</option>
+                    <option value="12:30">۱۲:۳۰</option>
+                    <option value="13:00">۱۳:۰۰</option>
+                    <option value="13:30">۱۳:۳۰</option>
+                    <option value="14:00">۱۴:۰۰</option>
+                    <option value="14:30">۱۴:۳۰</option>
+                    <option value="15:00">۱۵:۰۰</option>
+                    <option value="15:30">۱۵:۳۰</option>
+                    <option value="16:00">۱۶:۰۰</option>
+                    <option value="16:30">۱۶:۳۰</option>
+                    <option value="17:00">۱۷:۰۰</option>
+                    <option value="17:30">۱۷:۳۰</option>
+                    <option value="18:00">۱۸:۰۰</option>
                 </select>
             </div>
 
@@ -65,73 +200,135 @@
     </div>
 </div>
 
-<link
-    rel="stylesheet"
-    href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css"
->
+<style>
+    .date-table-wrapper {
+        width: 100%;
+        margin-top: 10px;
+    }
 
-<script src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
+    .date-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 6px;
+        direction: rtl;
+    }
+
+    .date-table td {
+        width: 14.28%;
+        padding: 0;
+    }
+
+    .date-btn {
+        width: 100%;
+        min-height: 68px;
+        padding: 8px 3px;
+        border: 2px solid #f4b6cc;
+        border-radius: 14px;
+        background: #fff8fb;
+        color: #8b315b;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.2s ease;
+    }
+
+    .date-btn span {
+        display: block;
+        font-size: 1.15rem;
+        font-weight: 900;
+        line-height: 1.4;
+    }
+
+    .date-btn small {
+        display: block;
+        margin-top: 3px;
+        font-size: 0.68rem;
+        color: #b56b89;
+        white-space: nowrap;
+    }
+
+    .date-btn:hover {
+        background: #ffe5ef;
+        border-color: #e889aa;
+        transform: translateY(-2px);
+    }
+
+    .date-btn.selected {
+        background: #e91e63;
+        border-color: #c2185b;
+        color: white;
+        box-shadow: 0 5px 12px rgba(233, 30, 99, 0.25);
+    }
+
+    .date-btn.selected small {
+        color: white;
+    }
+
+    .date-help {
+        margin: 10px 0 0;
+        text-align: center;
+        color: #a45b79;
+        font-size: 0.85rem;
+    }
+
+    .date-help.success {
+        color: #c2185b;
+        font-weight: 800;
+    }
+
+    @media (max-width: 480px) {
+        .date-table {
+            border-spacing: 3px;
+        }
+
+        .date-btn {
+            min-height: 61px;
+            padding: 5px 1px;
+            border-radius: 10px;
+        }
+
+        .date-btn span {
+            font-size: 0.95rem;
+        }
+
+        .date-btn small {
+            font-size: 0.56rem;
+        }
+    }
+
+    /* اطمینان از اینکه تقویم زیر کارت‌ها نمی‌رود */
+    .jdp-container {
+        z-index: 10000 !important;
+    }
+    #date_input {
+        cursor: pointer;
+        background-color: #fff !important;
+    }
+</style>
 
 <script>
-(function () {
-    const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
+    document.addEventListener("DOMContentLoaded", function () {
+        const dateButtons = document.querySelectorAll(".date-btn");
+        const selectedDateInput = document.getElementById("selected_date");
+        const dateHelp = document.getElementById("date-help");
 
-    function convertPersianDigits(value) {
-        return value.replace(/[۰-۹]/g, function (digit) {
-            return persianDigits.indexOf(digit);
+        dateButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                dateButtons.forEach(function (item) {
+                    item.classList.remove("selected");
+                    item.removeAttribute("aria-pressed");
+                });
+
+                button.classList.add("selected");
+                button.setAttribute("aria-pressed", "true");
+
+                selectedDateInput.value = button.dataset.date;
+
+                dateHelp.textContent =
+                    "تاریخ انتخاب‌شده: " + button.innerText.replace(/\n/g, " ");
+
+                dateHelp.classList.add("success");
+            });
         });
-    }
-
-    function getTodayJalali() {
-        const formatter = new Intl.DateTimeFormat(
-            "fa-IR-u-ca-persian",
-            {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit"
-            }
-        );
-
-        const parts = formatter.formatToParts(new Date());
-
-        const year = convertPersianDigits(
-            parts.find(part => part.type === "year").value
-        );
-
-        const month = convertPersianDigits(
-            parts.find(part => part.type === "month").value
-        );
-
-        const day = convertPersianDigits(
-            parts.find(part => part.type === "day").value
-        );
-
-        return {
-            year: year,
-            month: month.padStart(2, "0"),
-            day: day.padStart(2, "0")
-        };
-    }
-
-    const today = getTodayJalali();
-    const todayDay = Number(today.day);
-
-    /*
-       اگر امروز قبل از روز ۲۴ باشد، انتخاب از روز ۲۴ همین ماه شروع می‌شود.
-       اگر امروز روز ۲۴ یا بعد از آن باشد، انتخاب از امروز شروع می‌شود.
-    */
-    const minimumDay = Math.max(todayDay, 24);
-
-    const minDate =
-        `${today.year}/${today.month}/${String(minimumDay).padStart(2, "0")}`;
-
-    // آخرین تاریخ مجاز: ۳۱ شهریور ۱۴۰۵
-    const maxDate = "1405/06/31";
-
-    jalaliDatepicker.startWatch({
-        minDate: minDate,
-        maxDate: maxDate
     });
-})();
 </script>
 {% endblock %}
