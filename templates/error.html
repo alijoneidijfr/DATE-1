@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}صفحه پیدا نشد{% endblock %}
+{% block content %}
+<section class="booking-card fade-in"><div class="brand">خطا</div><h1>{{ message }}</h1><a class="primary-button link-button" href="{{ url_for('index') }}">بازگشت</a></section>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}مدیریت رزروها{% endblock %}
+{% block content %}
+<section class="admin-card fade-in">
+  <header class="admin-header">
+    <div>
+      <div class="brand">پنل مدیریت</div>
+      <h1>رزروهای ثبت‌شده</h1>
+    </div>
+    <form action="{{ url_for('admin_logout') }}" method="post"><button class="secondary-button" type="submit">خروج</button></form>
+  </header>
+  {% if bookings %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>نام</th><th>تلفن</th><th>تاریخ</th><th>ساعت</th><th>عملیات</th></tr></thead>
+      <tbody>
+      {% for booking in bookings %}
+        <tr>
+          <td>{{ booking.name }}</td><td>{{ booking.phone }}</td><td>{{ booking.booking_date }}</td><td>{{ booking.booking_time }}</td>
+          <td><form action="{{ url_for('delete_booking', booking_id=booking.id) }}" method="post" onsubmit="return confirm('این رزرو حذف شود؟');"><button class="delete-button" type="submit">حذف</button></form></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty-state">هنوز هیچ رزروی ثبت نشده است.</p>
+  {% endif %}
+</section>
+{% endblock %}

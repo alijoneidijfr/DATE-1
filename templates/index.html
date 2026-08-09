@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}رزرو آنلاین دیت{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
+{% endblock %}
+{% block content %}
+<section class="booking-card fade-in">
+  <div class="brand">♥ رزرو آنلاین</div>
+  <h1>برای یک قرار خوب، زمانت را انتخاب کن</h1>
+  <p class="lead">اطلاعات را وارد کن؛ روز و ساعت انتخابی فقط برای یک نفر ثبت می‌شود.</p>
+
+  <form class="booking-form" action="{{ url_for('book') }}" method="post">
+    <label>نام و نام خانوادگی
+      <input name="name" type="text" autocomplete="name" placeholder="مثلاً علی احمدی" required maxlength="80">
+    </label>
+    <label>شماره تماس
+      <input name="phone" type="tel" inputmode="tel" placeholder="۰۹۱۲۱۲۳۴۵۶۷" required maxlength="20">
+    </label>
+    <div class="form-grid">
+      <label>روز مورد نظر
+        <input id="booking-date" name="date" type="text" placeholder="انتخاب تاریخ شمسی" data-jdp required readonly>
+      </label>
+      <label>ساعت
+        <select name="time" required>
+          <option value="" selected disabled>انتخاب ساعت</option>
+          {% for time in ['16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00'] %}
+          <option value="{{ time }}">{{ time }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+    <p class="hint">ساعت‌های قابل رزرو: ۱۶:۰۰ تا ۲۲:۰۰</p>
+    <button class="primary-button" type="submit">ثبت رزرو <span>←</span></button>
+  </form>
+</section>
+<script src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
+<script>jalaliDatepicker.startWatch({ minDate: "attr", time: false });</script>
+{% endblock %}

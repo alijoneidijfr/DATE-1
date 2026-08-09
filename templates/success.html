@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}رزرو ثبت شد{% endblock %}
+{% block content %}
+<section class="booking-card success-card fade-in">
+  <div class="success-icon">✓</div>
+  <div class="brand">رزرو ثبت شد</div>
+  <h1>{{ name }}، قرار تو ثبت شد</h1>
+  <p class="lead">زمان انتخاب‌شده: <strong>{{ booking_date }}</strong>، ساعت <strong>{{ booking_time }}</strong></p>
+  <a class="primary-button link-button" href="{{ url_for('index') }}">بازگشت به صفحه اصلی</a>
+</section>
+{% endblock %}

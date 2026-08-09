@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}ورود مدیر{% endblock %}
+{% block content %}
+<section class="booking-card login-card fade-in">
+  <div class="brand">پنل مدیریت</div>
+  <h1>ورود مدیر</h1>
+  <p class="lead">برای مشاهده و مدیریت رزروها رمز را وارد کن.</p>
+  <form class="booking-form" method="post">
+    <label>رمز عبور
+      <input name="password" type="password" autocomplete="current-password" required>
+    </label>
+    <button class="primary-button" type="submit">ورود به پنل</button>
+  </form>
+</section>
+{% endblock %}
