@@ -1,7 +1,7 @@
 :root {
     --bg1: #fff1f7;
     --bg2: #ffe0ec;
-    --card: rgba(255, 255, 255, 0.88);
+    --card: rgba(255, 255, 255, 0.9);
     --text: #5a2b45;
     --pink: #ff5fa2;
     --pink-dark: #e8458f;
@@ -22,12 +22,8 @@ body {
     min-height: 100vh;
 }
 
-a {
-    color: inherit;
-}
-
 .hero {
-    min-height: calc(100vh - 80px);
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -77,7 +73,9 @@ h1 {
     flex-wrap: wrap;
 }
 
-button {
+button,
+a.yes-btn,
+a.no-btn {
     border: 0;
     border-radius: 18px;
     padding: 14px 28px;
@@ -92,15 +90,19 @@ button {
     background: linear-gradient(135deg, #ff6fb0, #ff3f93);
     color: white;
     box-shadow: 0 12px 24px rgba(255, 63, 147, 0.28);
+    text-decoration: none;
 }
 
 .no-btn {
     background: #ffffff;
     color: #9a4a72;
     border: 2px solid #f1b7cf;
+    text-decoration: none;
 }
 
-button:hover {
+button:hover,
+a.yes-btn:hover,
+a.no-btn:hover {
     transform: translateY(-2px);
 }
 
@@ -112,76 +114,31 @@ button:hover {
     font-weight: 600;
 }
 
-.container {
-    width: min(980px, 100%);
-    margin: 0 auto;
-    padding: 24px 16px 40px;
-}
-
-.form-card {
-    width: min(720px, 100%);
-    margin: 24px auto 0;
-    background: rgba(255, 255, 255, 0.9);
+.info-box {
+    background: rgba(255, 255, 255, 0.75);
     border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 28px;
-    box-shadow: var(--shadow);
-}
-
-label {
-    display: block;
-    margin: 16px 0 8px;
-    font-weight: 700;
-}
-
-input,
-select,
-textarea {
-    width: 100%;
-    border: 1px solid #efc6d8;
-    border-radius: 14px;
-    padding: 14px 16px;
-    font: inherit;
-    background: #fff;
-    color: var(--text);
-    outline: none;
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-    border-color: var(--pink);
-    box-shadow: 0 0 0 3px rgba(255, 95, 162, 0.12);
-}
-
-.flash {
-    margin-bottom: 16px;
-    padding: 12px 14px;
-    border-radius: 14px;
-    background: #fff;
-    border: 1px solid #f1c4d7;
-}
-
-.flash.error {
-    color: #b63257;
-}
-
-.flash.success {
-    color: #2b8a57;
+    border-radius: 20px;
+    padding: 20px 18px;
+    text-align: right;
+    line-height: 2;
+    font-size: 1.05rem;
 }
 
 @media (max-width: 640px) {
     .card,
-    .form-card {
+    .romantic-card {
         padding: 22px 18px;
         border-radius: 22px;
     }
 
-    button {
-        width: 100%;
-    }
-
     .button-row {
         flex-direction: column;
+    }
+
+    button,
+    a.yes-btn,
+    a.no-btn {
+        width: 100%;
+        text-align: center;
     }
 }
