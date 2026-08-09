@@ -1,128 +1,44 @@
 {% extends "base.html" %}
-
-{% block title %}پیشنهاد کافه{% endblock %}
-
-{% block head %}
-<link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
->
-{% endblock %}
-
 {% block content %}
 <div class="hero">
-    <div class="card romantic-card cafe-card">
-        <div class="heart">☕</div>
-
-        <div class="badge">انتخاب مکان قرار</div>
-
-        <h1>پیشنهادت برای کافه چیه؟</h1>
-
-        <p class="subtitle">
-            تو کافه و محله‌ای که دوست داری رو پیشنهاد بده 💗
-        </p>
-
-        {% if error %}
-        <div class="error-message">
-            {{ error }}
-        </div>
-        {% endif %}
-
-        <form
-            action="{{ url_for('submit_final') }}"
-            method="POST"
-            onsubmit="return validateCafeForm();"
-        >
+    <div class="card romantic-card">
+        <h1>پیشنهادت برای کافه چیه؟ ☕</h1>
+        <form action="{{ url_for('submit_final') }}" method="POST">
             <input type="hidden" name="date" value="{{ date }}">
             <input type="hidden" name="time" value="{{ time }}">
-
+            
+            <div class="form-group">
+                <input type="text" name="cafe_name" placeholder="نام کافه (اختیاری)">
+            </div>
+            <div class="form-group">
+                <input type="text" name="cafe_area" placeholder="محله (اختیاری)">
+            </div>
+            
+            <div id="map" style="height: 200px; margin-bottom: 15px; border-radius: 10px;"></div>
             <input type="hidden" name="lat" id="lat">
             <input type="hidden" name="lng" id="lng">
 
-            <div class="cafe-fields">
-                <div class="cafe-box">
-                    <label for="cafe_name">اسم کافه</label>
-
-                    <input
-                        type="text"
-                        id="cafe_name"
-                        name="cafe_name"
-                        placeholder="مثلاً کافه ویونا"
-                        required
-                    >
-                </div>
-
-                <div class="cafe-box">
-                    <label for="cafe_area">اسم محله</label>
-
-                    <input
-                        type="text"
-                        id="cafe_area"
-                        name="cafe_area"
-                        placeholder="مثلاً سعادت‌آباد"
-                        required
-                    >
-                </div>
+            <div class="form-group">
+                <label>شماره تماس برای هماهنگی:</label>
+                <input type="tel" name="phone" value="+989190118068" required>
             </div>
 
-            <div class="map-title">
-                اگر لوکیشن دقیق کافه را می‌دانی، روی نقشه انتخابش کن:
-            </div>
-
-            <div id="map"></div>
-
-            <p id="mapHint" class="map-hint">
-                برای انتخاب مکان، روی نقشه کلیک کن 📍
-            </p>
-
-            <button type="submit" class="yes-btn full-width">
-                ثبت نهایی قرار 💕
-            </button>
+            <button type="submit" class="yes-btn">ثبت نهایی قرار 💕</button>
         </form>
     </div>
 </div>
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <script>
-    const map = L.map("map").setView([35.6892, 51.3890], 12);
-
-    L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
-            attribution: "&copy; OpenStreetMap contributors"
-        }
-    ).addTo(map);
-
-    let marker = null;
-
-    map.on("click", function (event) {
-        if (marker !== null) {
-            map.removeLayer(marker);
-        }
-
-        marker = L.marker(event.latlng).addTo(map);
-
-        document.getElementById("lat").value =
-            event.latlng.lat.toFixed(6);
-
-        document.getElementById("lng").value =
-            event.latlng.lng.toFixed(6);
-
-        document.getElementById("mapHint").textContent =
-            "لوکیشن انتخاب شد 📍";
+    var map = L.map('map').setView([35.6892, 51.3890], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    var marker;
+    map.on('click', function(e) {
+        if (marker) map.removeLayer(marker);
+        marker = L.marker(e.latlng).addTo(map);
+        document.getElementById('lat').value = e.latlng.lat;
+        document.getElementById('lng').value = e.latlng.lng;
     });
-
-    function validateCafeForm() {
-        const lat = document.getElementById("lat").value;
-        const lng = document.getElementById("lng").value;
-
-        if (!lat || !lng) {
-            alert("لطفاً محل کافه را روی نقشه انتخاب کن.");
-            return false;
-        }
-
-        return true;
-    }
 </script>
 {% endblock %}
