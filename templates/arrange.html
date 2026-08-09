@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero">
+    <div class="card romantic-card">
+        <div class="badge">ای جانم! 💗</div>
+        <h1>خیلی خوشحالم که قبول کردی...</h1>
+        <p class="subtitle">حالا بگو چه روز و ساعتی برات بهتره؟</p>
+
+        <form action="{{ url_for('arrange') }}" method="POST">
+            <div class="form-group">
+                <label>تاریخ مورد نظرت:</label>
+                <input type="text" name="date" id="date_input" data-jdp placeholder="انتخاب تاریخ" required>
+            </div>
+
+            <div class="form-group">
+                <label>ساعت قرار:</label>
+                <select name="time" required>
+                    {% for h in range(9, 22) %}
+                    <option value="{{ h }}:00">{{ h }}:00</option>
+                    <option value="{{ h }}:30">{{ h }}:30</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="yes-btn" style="margin-top: 20px; width: 100%;">مرحله بعد: انتخاب کافه</button>
+        </form>
+    </div>
+</div>
+
+<!-- اضافه کردن تقویم شمسی -->
+<link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
+<script src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
+<script>
+    jalaliDatepicker.startWatch();
+</script>
+{% endblock %}
