@@ -12,7 +12,7 @@
         <h1>قرارمون ثبت شد!</h1>
 
         <p class="subtitle">
-            بی‌صبرانه منتظر دیدنت هستم 💕
+            ممنون که قبول کردی؛ بی‌صبرانه منتظر دیدنت هستم 💕
         </p>
 
         <div class="info-box">
@@ -26,24 +26,67 @@
                 {{ time }}
             </p>
 
+            {% if cafe_name %}
             <p>
                 <strong>کافه:</strong>
                 {{ cafe_name }}
             </p>
+            {% endif %}
 
+            {% if cafe_area %}
             <p>
                 <strong>محله:</strong>
                 {{ cafe_area }}
             </p>
+            {% endif %}
+
+            <p>
+                <strong>شماره هماهنگی:</strong>
+                <a href="tel:+989190118068">
+                    {{ phone }}
+                </a>
+            </p>
         </div>
 
+        {% if latitude and longitude %}
         <a
             class="yes-btn continue-link"
             href="https://www.openstreetmap.org/?mlat={{ latitude }}&mlon={{ longitude }}#map=17/{{ latitude }}/{{ longitude }}"
             target="_blank"
+            rel="noopener noreferrer"
         >
             دیدن لوکیشن کافه روی نقشه 📍
         </a>
+        {% endif %}
+
+        <div class="contact-box">
+            <h2>راه ارتباطی من</h2>
+
+            <p>
+                برای هماهنگی می‌تونی با این شماره تماس بگیری:
+            </p>
+
+            <a href="tel:+989905991102" class="contact-number">
+                +989905991102
+            </a>
+
+            <p class="instagram-text">
+                برای دیدن صفحه‌ام هم خوشحال می‌شم فالو کنی 💗
+            </p>
+
+            <a
+                href="https://www.instagram.com/a_joneidi.jfr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="instagram-link"
+            >
+                @a_joneidi.jfr
+            </a>
+        </div>
+
+        <p class="final-message">
+            منتظر یه قرار قشنگم 🌸
+        </p>
     </div>
 </div>
 {% endblock %}
