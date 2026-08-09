@@ -44,7 +44,7 @@
                         ساعت را انتخاب کن
                     </option>
 
-                    {% for hour in range(9, 22) %}
+                    {% for hour in range(9, 18) %}
                     <option value="{{ '%02d:00'|format(hour) }}">
                         {{ '%02d:00'|format(hour) }}
                     </option>
@@ -54,7 +54,7 @@
                     </option>
                     {% endfor %}
 
-                    <option value="22:00">22:00</option>
+                    <option value="18:00">18:00</option>
                 </select>
             </div>
 
