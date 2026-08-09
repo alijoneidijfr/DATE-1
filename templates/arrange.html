@@ -9,10 +9,14 @@
         
         <div class="badge">برنامه‌ریزی قرار</div>
         
-        <h1>چه زمانی مناسبته؟</h1>
-        
+        <h1>خیلی خوشحال شدم که قبول کردی!</h1>
+
         <p class="subtitle">
-            لطفاً تاریخ و ساعت مدنظرت رو انتخاب کن تا هماهنگ بشیم.
+            حالا زمان و ساعتش رو انتخاب کنیم 💗
+        </p>
+
+        <p class="thanks-note">
+            مرسی که گفتی بله :)
         </p>
 
         {% if error %}
@@ -65,23 +69,19 @@
             </div>
 
             <button type="submit" class="yes-btn full-width">
-                مرحله بعد: انتخاب کافه 💕
+                مرحله بعد: پیشنهاد کافه ☕
             </button>
         </form>
     </div>
 </div>
 
-<!-- CSS و JS مربوط به تقویم -->
 <link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
 <script src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
 
 <script>
     jalaliDatepicker.startWatch({
         minDate: "1405/05/24",
-        maxDate: "1405/06/31",
-        showTodayBtn: false,
-        showEmptyBtn: false,
-        autoNext: true
+        maxDate: "1405/06/31"
     });
 
     document.getElementById('date_input').addEventListener('keydown', function(e) {
@@ -90,6 +90,14 @@
 </script>
 
 <style>
+    .thanks-note {
+        margin-top: -4px;
+        margin-bottom: 18px;
+        color: #9b4b72;
+        font-size: 0.92rem;
+        font-weight: 600;
+    }
+
     select {
         cursor: pointer;
         appearance: none;
