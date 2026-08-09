@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero">
+    <div class="card romantic-card">
+        <div class="badge">ثبت شد! ✨</div>
+        <h1>همه چیز عالیه...</h1>
+        <p class="subtitle">قرارمون ثبت شد. بی‌صبرانه منتظر دیدنت هستم! 💗</p>
+        <div class="heart-animation">❤️</div>
+    </div>
+</div>
+<style>
+    .heart-animation { font-size: 5rem; animation: beat 1s infinite; margin-top: 20px; }
+    @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+</style>
+{% endblock %}
