@@ -1,92 +1,22 @@
 {% extends "base.html" %}
-
-{% block title %}قرارمون ثبت شد{% endblock %}
-
 {% block content %}
 <div class="hero">
     <div class="card romantic-card">
-        <div class="heart big-heart">💖</div>
-
-        <div class="badge">همه‌چیز آماده‌ست</div>
-
+        <div class="heart">💖</div>
         <h1>قرارمون ثبت شد!</h1>
-
-        <p class="subtitle">
-            ممنون که قبول کردی؛ بی‌صبرانه منتظر دیدنت هستم 💕
-        </p>
-
-        <div class="info-box">
-            <p>
-                <strong>تاریخ:</strong>
-                {{ date }}
-            </p>
-
-            <p>
-                <strong>ساعت:</strong>
-                {{ time }}
-            </p>
-
-            {% if cafe_name %}
-            <p>
-                <strong>کافه:</strong>
-                {{ cafe_name }}
-            </p>
-            {% endif %}
-
-            {% if cafe_area %}
-            <p>
-                <strong>محله:</strong>
-                {{ cafe_area }}
-            </p>
-            {% endif %}
-
-            <p>
-                <strong>شماره هماهنگی:</strong>
-                <a href="tel:+989190118068">
-                    {{ phone }}
-                </a>
-            </p>
+        <p>ممنون که قبول کردی. اطلاعات قرار:</p>
+        <div class="info-box" style="text-align: right; background: #fff0f5; padding: 15px; border-radius: 10px;">
+            <p>📅 تاریخ: {{ date }}</p>
+            <p>⏰ ساعت: {{ time }}</p>
+            {% if cafe_name %}<p>☕ کافه: {{ cafe_name }}</p>{% endif %}
         </div>
-
-        {% if latitude and longitude %}
-        <a
-            class="yes-btn continue-link"
-            href="https://www.openstreetmap.org/?mlat={{ latitude }}&mlon={{ longitude }}#map=17/{{ latitude }}/{{ longitude }}"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            دیدن لوکیشن کافه روی نقشه 📍
-        </a>
-        {% endif %}
-
-        <div class="contact-box">
-            <h2>راه ارتباطی من</h2>
-
-            <p>
-                برای هماهنگی می‌تونی با این شماره تماس بگیری:
-            </p>
-
-            <a href="tel:+989905991102" class="contact-number">
-                +989905991102
-            </a>
-
-            <p class="instagram-text">
-                برای دیدن صفحه‌ام هم خوشحال می‌شم فالو کنی 💗
-            </p>
-
-            <a
-                href="https://www.instagram.com/a_joneidi.jfr/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="instagram-link"
-            >
-                @a_joneidi.jfr
-            </a>
+        
+        <div class="contact-box" style="margin-top: 20px;">
+            <p>شماره من برای هماهنگی:</p>
+            <a href="tel:+989905991102" style="font-weight: bold; color: #d63384;">09905991102</a>
+            <p style="margin-top: 10px;">اینستاگرام من:</p>
+            <a href="https://www.instagram.com/a_joneidi.jfr/" target="_blank" style="color: #d63384; font-weight: bold;">@a_joneidi.jfr</a>
         </div>
-
-        <p class="final-message">
-            منتظر یه قرار قشنگم 🌸
-        </p>
     </div>
 </div>
 {% endblock %}
