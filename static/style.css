@@ -1,192 +1,5 @@
-:root {
-    --bg1: #fff1f7;
-    --bg2: #ffe0ec;
-    --card: rgba(255, 255, 255, 0.92);
-    --text: #5a2b45;
-    --pink: #ff5fa2;
-    --pink-dark: #e8458f;
-    --soft: #ffd4e5;
-    --border: rgba(255, 95, 162, 0.2);
-    --shadow: 0 18px 50px rgba(255, 95, 162, 0.18);
-}
-
-* {
-    box-sizing: border-box;
-}
-
-html {
-    direction: rtl;
-}
-
-body {
-    margin: 0;
-    min-height: 100vh;
-    font-family: "Vazirmatn", sans-serif;
-    color: var(--text);
-    background: linear-gradient(135deg, var(--bg1), var(--bg2));
-}
-
-.hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 32px 16px;
-}
-
-.card {
-    width: min(620px, 100%);
-    padding: 36px 28px;
-    text-align: center;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 28px;
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(12px);
-}
-
 .cafe-card {
     width: min(820px, 100%);
-}
-
-.heart {
-    margin-bottom: 12px;
-    font-size: 3rem;
-}
-
-.big-heart {
-    font-size: 5rem;
-    animation: heartbeat 1.2s infinite;
-}
-
-@keyframes heartbeat {
-    0%,
-    100% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.16);
-    }
-}
-
-.badge {
-    display: inline-block;
-    margin-bottom: 18px;
-    padding: 8px 14px;
-    color: var(--pink-dark);
-    background: #ffffff;
-    border: 1px solid var(--soft);
-    border-radius: 999px;
-    font-size: 0.92rem;
-}
-
-h1 {
-    margin: 0 0 12px;
-    color: var(--pink-dark);
-    font-size: clamp(2rem, 5vw, 3.1rem);
-}
-
-.subtitle {
-    margin: 0 0 28px;
-    font-size: 1.05rem;
-    line-height: 2;
-}
-
-.button-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    flex-wrap: wrap;
-}
-
-button,
-.yes-btn,
-.no-btn {
-    display: inline-block;
-    padding: 14px 28px;
-    border: 0;
-    border-radius: 18px;
-    font-family: inherit;
-    font-size: 1.05rem;
-    font-weight: 700;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        opacity 0.2s ease;
-}
-
-.yes-btn {
-    color: #ffffff;
-    background: linear-gradient(135deg, #ff6fb0, #ff3f93);
-    box-shadow: 0 12px 24px rgba(255, 63, 147, 0.28);
-}
-
-.no-btn {
-    color: #9a4a72;
-    background: #ffffff;
-    border: 2px solid #f1b7cf;
-}
-
-button:hover,
-.yes-btn:hover,
-.no-btn:hover {
-    transform: translateY(-2px);
-}
-
-.full-width {
-    width: 100%;
-    margin-top: 22px;
-}
-
-.message {
-    min-height: 28px;
-    margin-top: 24px;
-    color: #a23f73;
-    font-weight: 600;
-}
-
-.form-group {
-    margin-bottom: 18px;
-    text-align: right;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    color: var(--pink-dark);
-    font-weight: 700;
-}
-
-input,
-select {
-    width: 100%;
-    padding: 13px 14px;
-    color: var(--text);
-    background: #ffffff;
-    border: 2px solid var(--soft);
-    border-radius: 13px;
-    outline: none;
-    font: inherit;
-}
-
-input:focus,
-select:focus {
-    border-color: var(--pink);
-    box-shadow: 0 0 0 4px rgba(255, 95, 162, 0.12);
-}
-
-.error-message {
-    margin-bottom: 18px;
-    padding: 12px 14px;
-    color: #b63257;
-    background: #fff0f4;
-    border: 1px solid #f1b7cf;
-    border-radius: 13px;
 }
 
 .cafe-fields {
@@ -196,28 +9,56 @@ select:focus {
     margin-bottom: 22px;
 }
 
-.cafe-box {
+.cafe-box,
+.phone-box,
+.confirm-box,
+.contact-box {
     padding: 18px;
+    margin-top: 16px;
     text-align: right;
-    background: rgba(255, 240, 247, 0.75);
+    background: rgba(255, 240, 247, 0.8);
     border: 1px solid var(--soft);
     border-radius: 18px;
 }
 
-.map-title {
-    margin: 10px 0 10px;
-    color: var(--pink-dark);
-    font-weight: 700;
-    text-align: right;
+.phone-box small {
+    display: block;
+    margin-top: 8px;
+    color: #a23f73;
+}
+
+.confirm-box {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.checkbox-label input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--pink);
 }
 
 #map {
     width: 100%;
     height: 320px;
-    margin-bottom: 8px;
+    margin-top: 12px;
     overflow: hidden;
     border: 2px solid var(--soft);
     border-radius: 18px;
+}
+
+.map-title {
+    margin-top: 20px;
+    color: var(--pink-dark);
+    font-weight: 700;
+    text-align: right;
 }
 
 .map-hint {
@@ -226,41 +67,47 @@ select:focus {
     font-size: 0.95rem;
 }
 
-.info-box {
-    margin: 22px 0;
-    padding: 18px 20px;
-    color: var(--text);
-    background: rgba(255, 255, 255, 0.78);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    text-align: right;
-    line-height: 1.8;
+.contact-box {
+    margin-top: 26px;
+    text-align: center;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 225, 238, 0.9),
+        rgba(255, 245, 249, 0.95)
+    );
 }
 
-.info-box p {
-    margin: 8px 0;
+.contact-box h2 {
+    margin-top: 0;
+    color: var(--pink-dark);
 }
 
-.continue-link {
-    margin-top: 8px;
+.contact-number,
+.instagram-link {
+    display: inline-block;
+    color: var(--pink-dark);
+    font-size: 1.2rem;
+    font-weight: 800;
+    text-decoration: none;
+    direction: ltr;
+}
+
+.contact-number:hover,
+.instagram-link:hover {
+    text-decoration: underline;
+}
+
+.instagram-text {
+    margin-bottom: 8px;
+}
+
+.final-message {
+    margin-bottom: 0;
+    color: var(--pink-dark);
+    font-weight: 700;
 }
 
 @media (max-width: 640px) {
-    .card {
-        padding: 24px 18px;
-        border-radius: 22px;
-    }
-
-    .button-row {
-        flex-direction: column;
-    }
-
-    button,
-    .yes-btn,
-    .no-btn {
-        width: 100%;
-    }
-
     .cafe-fields {
         grid-template-columns: 1fr;
     }
