@@ -1,15 +1,49 @@
 {% extends "base.html" %}
+
+{% block title %}قرارمون ثبت شد{% endblock %}
+
 {% block content %}
 <div class="hero">
     <div class="card romantic-card">
-        <div class="badge">ثبت شد! ✨</div>
-        <h1>همه چیز عالیه...</h1>
-        <p class="subtitle">قرارمون ثبت شد. بی‌صبرانه منتظر دیدنت هستم! 💗</p>
-        <div class="heart-animation">❤️</div>
+        <div class="heart big-heart">💖</div>
+
+        <div class="badge">همه‌چیز آماده‌ست</div>
+
+        <h1>قرارمون ثبت شد!</h1>
+
+        <p class="subtitle">
+            بی‌صبرانه منتظر دیدنت هستم 💕
+        </p>
+
+        <div class="info-box">
+            <p>
+                <strong>تاریخ:</strong>
+                {{ date }}
+            </p>
+
+            <p>
+                <strong>ساعت:</strong>
+                {{ time }}
+            </p>
+
+            <p>
+                <strong>کافه:</strong>
+                {{ cafe_name }}
+            </p>
+
+            <p>
+                <strong>محله:</strong>
+                {{ cafe_area }}
+            </p>
+        </div>
+
+        <a
+            class="yes-btn continue-link"
+            href="https://www.openstreetmap.org/?mlat={{ latitude }}&mlon={{ longitude }}#map=17/{{ latitude }}/{{ longitude }}"
+            target="_blank"
+        >
+            دیدن لوکیشن کافه روی نقشه 📍
+        </a>
     </div>
 </div>
-<style>
-    .heart-animation { font-size: 5rem; animation: beat 1s infinite; margin-top: 20px; }
-    @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
-</style>
 {% endblock %}
