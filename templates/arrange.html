@@ -19,7 +19,6 @@
     .arrange-card {
         width: 100%;
         max-width: 375px;
-        min-height: 430px;
         padding: 25px 24px 24px;
         background: #ffffff;
         border-radius: 22px;
@@ -28,10 +27,10 @@
     }
 
     .arrange-emoji {
+        margin-bottom: 15px;
         text-align: center;
         font-size: 38px;
         line-height: 1;
-        margin-bottom: 15px;
     }
 
     .arrange-badge {
@@ -77,6 +76,7 @@
     .arrange-form-group select {
         width: 100%;
         height: 47px;
+        box-sizing: border-box;
         padding: 0 13px;
         border: 1px solid #e9bdcf;
         border-radius: 11px;
@@ -172,7 +172,7 @@
         </div>
         {% endif %}
 
-        <form action="{{ url_for('arrange') }}" method="POST">
+        <form action="{{ url_for('arrange') }}" method="POST" id="arrange-form">
 
             <div class="arrange-form-group">
                 <label for="date_input">
@@ -197,11 +197,7 @@
                     ساعت قرار
                 </label>
 
-                <select
-                    id="time_input"
-                    name="time"
-                    required
-                >
+                <select id="time_input" name="time" required>
                     <option value="" disabled selected>
                         ساعت را انتخاب کن
                     </option>
@@ -228,25 +224,95 @@
     </div>
 </div>
 
-<!-- اگر فایل‌های Datepicker را قبلاً در base.html داری، این دو خط را اضافه نکن -->
+<!-- کتابخانه تقویم شمسی -->
 <link
     rel="stylesheet"
-    href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css"
+    href="https://cdn.jsdelivr.net/npm/jalalidatepicker@0.11.1/dist/jalalidatepicker.min.css"
 >
 
-<script src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jalalidatepicker@0.11.1/dist/jalalidatepicker.min.js"></script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        if (typeof jalaliDatepicker !== "undefined") {
-            jalaliDatepicker.startWatch({
-                minDate: "1405/05/24",
-                maxDate: "1405/06/06"
+document.addEventListener("DOMContentLoaded", function () {
+    const dateInput = document.getElementById("date_input");
+    const form = document.getElementById("arrange-form");
+
+    const MIN_DATE = "1405/05/24";
+    const MAX_DATE = "1405/06/06";
+
+    function convertPersianDigits(value) {
+        const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
+        const arabicDigits = "٠١٢٣٤٥٦٧٨٩";
+
+        return value
+            .replace(/[۰-۹]/g, function (digit) {
+                return persianDigits.indexOf(digit);
+            })
+            .replace(/[٠-٩]/g, function (digit) {
+                return arabicDigits.indexOf(digit);
             });
+    }
+
+    function normalizeDate(value) {
+        return convertPersianDigits(value || "")
+            .replace(/-/g, "/")
+            .replace(/\s/g, "")
+            .trim();
+    }
+
+    function isValidDateFormat(value) {
+        return /^1405\/(05|06)\/\d{2}$/.test(value);
+    }
+
+    function isDateInRange(value) {
+        const date = normalizeDate(value);
+
+        if (!isValidDateFormat(date)) {
+            return false;
+        }
+
+        return date >= MIN_DATE && date <= MAX_DATE;
+    }
+
+    if (typeof jalaliDatepicker !== "undefined") {
+        jalaliDatepicker.startWatch({
+            minDate: MIN_DATE,
+            maxDate: MAX_DATE
+        });
+    } else {
+        console.error("Jalali Datepicker بارگذاری نشده است.");
+    }
+
+    form.addEventListener("submit", function (event) {
+        const selectedDate = normalizeDate(dateInput.value);
+
+        if (!isDateInRange(selectedDate)) {
+            event.preventDefault();
+
+            dateInput.setCustomValidity(
+                "لطفاً تاریخی بین ۱۴۰۵/۰۵/۲۴ تا ۱۴۰۵/۰۶/۰۶ انتخاب کنید."
+            );
+
+            dateInput.reportValidity();
+            return;
+        }
+
+        dateInput.value = selectedDate;
+        dateInput.setCustomValidity("");
+    });
+
+    dateInput.addEventListener("input", function () {
+        const selectedDate = normalizeDate(dateInput.value);
+
+        if (selectedDate && !isDateInRange(selectedDate)) {
+            dateInput.setCustomValidity(
+                "این تاریخ خارج از بازه مجاز است."
+            );
         } else {
-            console.error("کتابخانه Jalali Datepicker بارگذاری نشده است.");
+            dateInput.setCustomValidity("");
         }
     });
+});
 </script>
 
 {% endblock %}
