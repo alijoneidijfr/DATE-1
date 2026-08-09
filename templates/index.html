@@ -48,10 +48,11 @@
     noBtn.addEventListener("click", function () {
         noCount++;
 
+        // منطق بزرگ شدن دکمه بله (بدون تغییر)
         yesScale = Math.min(1 + noCount * 0.18, 3.2);
-
         yesBtn.style.transform = `scale(${yesScale})`;
 
+        // منطق کوچک شدن و محو شدن دکمه نه (بدون تغییر)
         noBtn.style.transform = `scale(${Math.max(
             1 - noCount * 0.08,
             0.65
@@ -74,4 +75,55 @@
         window.location.href = "{{ url_for('arrange') }}";
     });
 </script>
+
+<style>
+    /* ظاهر دکمه نه مطابق عکس اول */
+    .button-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 30px;
+        position: relative;
+    }
+
+    .yes-btn {
+        min-width: 140px;
+        z-index: 10;
+        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .no-btn {
+        min-width: 58px;
+        padding: 8px 16px;
+        background: #f8f8f8;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        cursor: pointer;
+        color: #666;
+        font-family: inherit;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        transform-origin: center;
+    }
+
+    .no-btn:hover {
+        background: #f0f0f0;
+        border-color: #ccc;
+    }
+
+    .message {
+        margin-top: 25px;
+        font-size: 0.95rem;
+        color: var(--pink-dark);
+        min-height: 24px;
+        font-weight: 600;
+    }
+
+    @media (max-width: 420px) {
+        .button-row {
+            gap: 10px;
+        }
+    }
+</style>
 {% endblock %}
