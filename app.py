@@ -1,7 +1,6 @@
 import os
 import sqlite3
 from pathlib import Path
-from datetime import date as gregorian_date
 
 from flask import Flask, render_template, request
 
@@ -10,24 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent
 DATABASE_PATH = BASE_DIR / "database.db"
 
 app = Flask(__name__)
-
 app.config["SECRET_KEY"] = os.environ.get(
     "SECRET_KEY",
-    "dev-secret-key"
+    "change-this-secret-key"
 )
 
-
-# =========================================================
-# تنظیمات بازه مجاز تاریخ
-# =========================================================
-
-MIN_JALALI_DATE = "1405/05/24"
-MAX_JALALI_DATE = "1405/06/06"
-
-
-# =========================================================
-# اتصال به دیتابیس
-# =========================================================
 
 def get_db_connection():
     connection = sqlite3.connect(DATABASE_PATH)
@@ -53,246 +39,21 @@ def init_db():
             """
         )
 
-        required_columns = {
-            "cafe_name": "TEXT NOT NULL DEFAULT ''",
-            "cafe_area": "TEXT NOT NULL DEFAULT ''",
-            "latitude": "TEXT NOT NULL DEFAULT ''",
-            "longitude": "TEXT NOT NULL DEFAULT ''",
-            "phone": "TEXT NOT NULL DEFAULT ''",
-        }
-
+        # افزودن ستون phone به دیتابیس‌های قدیمی
         columns = connection.execute(
             "PRAGMA table_info(final_date)"
         ).fetchall()
 
-        existing_columns = {
-            column["name"] for column in columns
-        }
+        column_names = [column["name"] for column in columns]
 
-        for column_name, column_definition in required_columns.items():
-            if column_name not in existing_columns:
-                connection.execute(
-                    f"""
-                    ALTER TABLE final_date
-                    ADD COLUMN {column_name} {column_definition}
-                    """
-                )
+        if "phone" not in column_names:
+            connection.execute(
+                "ALTER TABLE final_date ADD COLUMN phone TEXT NOT NULL DEFAULT ''"
+            )
 
 
 init_db()
 
-
-# =========================================================
-# ابزارهای مربوط به تاریخ شمسی
-# =========================================================
-
-def normalize_digits(value):
-    """
-    تبدیل اعداد فارسی و عربی به انگلیسی.
-    """
-
-    if not value:
-        return ""
-
-    persian_digits = "۰۱۲۳۴۵۶۷۸۹"
-    arabic_digits = "٠١٢٣٤٥٦٧٨٩"
-    english_digits = "0123456789"
-
-    translation_table = str.maketrans(
-        persian_digits + arabic_digits,
-        english_digits + english_digits
-    )
-
-    return value.translate(translation_table)
-
-
-def normalize_jalali_date(value):
-    """
-    یکسان‌سازی تاریخ ورودی:
-    1405-05-24
-    ۱۴۰۵/۰۵/۲۴
-    ١٤٠٥/٠٥/٢٤
-
-    خروجی:
-    1405/05/24
-    """
-
-    value = normalize_digits(value)
-
-    value = (
-        value
-        .replace("-", "/")
-        .replace("\\", "/")
-        .replace(" ", "")
-        .strip()
-    )
-
-    return value
-
-
-def is_valid_jalali_date(value):
-    """
-    بررسی می‌کند تاریخ:
-    ۱. فرمت صحیح داشته باشد.
-    ۲. از نظر تعداد روز ماه معتبر باشد.
-    ۳. داخل بازه مجاز قرار داشته باشد.
-    """
-
-    normalized_date = normalize_jalali_date(value)
-
-    parts = normalized_date.split("/")
-
-    if len(parts) != 3:
-        return False
-
-    try:
-        year, month, day = map(int, parts)
-    except (ValueError, TypeError):
-        return False
-
-    # فقط سال ۱۴۰۵ مجاز است
-    if year != 1405:
-        return False
-
-    # ماه‌های معتبر سال ۱۴۰۵
-    if month < 1 or month > 12:
-        return False
-
-    # تعداد روزهای ماه‌های تقویم شمسی
-    if month <= 6:
-        maximum_day = 31
-    elif month <= 11:
-        maximum_day = 30
-    else:
-        maximum_day = 30
-
-    if day < 1 or day > maximum_day:
-        return False
-
-    # ساخت قالب استاندارد برای مقایسه
-    normalized_date = f"{year:04d}/{month:02d}/{day:02d}"
-
-    # چون قالب همه تاریخ‌ها یکسان است، مقایسه متنی صحیح است
-    if normalized_date < MIN_JALALI_DATE:
-        return False
-
-    if normalized_date > MAX_JALALI_DATE:
-        return False
-
-    return True
-
-
-def validate_and_normalize_date(value):
-    """
-    تاریخ را نرمال می‌کند و در صورت معتبر بودن برمی‌گرداند.
-    در صورت نامعتبر بودن، None برمی‌گرداند.
-    """
-
-    normalized_date = normalize_jalali_date(value)
-
-    if not is_valid_jalali_date(normalized_date):
-        return None
-
-    year, month, day = map(int, normalized_date.split("/"))
-
-    return f"{year:04d}/{month:02d}/{day:02d}"
-
-
-# =========================================================
-# تبدیل تاریخ جلالی به میلادی
-# =========================================================
-
-def jalali_to_gregorian(jy, jm, jd):
-    jy += 1595
-
-    days = (
-        -355668
-        + (365 * jy)
-        + ((jy // 33) * 8)
-        + (((jy % 33) + 3) // 4)
-        + jd
-    )
-
-    if jm < 7:
-        days += (jm - 1) * 31
-    else:
-        days += ((jm - 7) * 30) + 186
-
-    gy = 400 * (days // 146097)
-    days %= 146097
-
-    if days > 36524:
-        days -= 1
-        gy += 100 * (days // 36524)
-        days %= 36524
-
-        if days >= 365:
-            days += 1
-
-    gy += 4 * (days // 1461)
-    days %= 1461
-
-    if days > 365:
-        gy += (days - 1) // 365
-        days = (days - 1) % 365
-
-    gd = days + 1
-
-    month_days = [
-        31, 28, 31, 30, 31, 30,
-        31, 31, 30, 31, 30, 31
-    ]
-
-    if gy % 4 == 0 and (gy % 100 != 0 or gy % 400 == 0):
-        month_days[1] = 29
-
-    gm = 1
-
-    while gm <= 12 and gd > month_days[gm - 1]:
-        gd -= month_days[gm - 1]
-        gm += 1
-
-    return gy, gm, gd
-
-
-def get_weekday_name(jalali_date):
-    try:
-        normalized_date = normalize_jalali_date(jalali_date)
-
-        parts = normalized_date.split("/")
-
-        if len(parts) != 3:
-            return ""
-
-        jy, jm, jd = map(int, parts)
-
-        gy, gm, gd = jalali_to_gregorian(jy, jm, jd)
-
-        weekday_index = gregorian_date(
-            gy,
-            gm,
-            gd
-        ).weekday()
-
-        weekdays = [
-            "دوشنبه",
-            "سه‌شنبه",
-            "چهارشنبه",
-            "پنجشنبه",
-            "جمعه",
-            "شنبه",
-            "یکشنبه",
-        ]
-
-        return weekdays[weekday_index]
-
-    except (ValueError, TypeError, IndexError):
-        return ""
-
-
-# =========================================================
-# صفحات اصلی
-# =========================================================
 
 @app.get("/")
 def index():
@@ -304,22 +65,13 @@ def arrange():
     if request.method == "GET":
         return render_template("arrange.html")
 
-    raw_date = request.form.get("date", "")
+    selected_date = request.form.get("date", "").strip()
     selected_time = request.form.get("time", "").strip()
 
-    selected_date = validate_and_normalize_date(raw_date)
-
-    if not selected_date:
+    if not selected_date or not selected_time:
         return render_template(
             "arrange.html",
-            error="تاریخ باید بین ۱۴۰۵/۰۵/۲۴ تا ۱۴۰۵/۰۶/۰۶ باشد."
-        )
-
-    if not selected_time:
-        return render_template(
-            "arrange.html",
-            error="لطفاً ساعت قرار را انتخاب کن.",
-            date=raw_date
+            error="لطفاً تاریخ و ساعت را انتخاب کن."
         )
 
     return render_template(
@@ -329,119 +81,28 @@ def arrange():
     )
 
 
-# =========================================================
-# ثبت نهایی اطلاعات
-# =========================================================
-
 @app.post("/submit-final")
 def submit_final():
-    raw_date = request.form.get("date", "")
+    selected_date = request.form.get("date", "").strip()
     selected_time = request.form.get("time", "").strip()
 
+    # اطلاعات کافه و لوکیشن اختیاری هستند
     cafe_name = request.form.get("cafe_name", "").strip()
     cafe_area = request.form.get("cafe_area", "").strip()
-
     latitude = request.form.get("lat", "").strip()
     longitude = request.form.get("lng", "").strip()
 
     phone = request.form.get("phone", "").strip()
 
-    # اعتبارسنجی دوباره تاریخ در مرحله نهایی
-    # تا کسی نتواند مستقیماً فرم را دور بزند
-    selected_date = validate_and_normalize_date(raw_date)
-
-    if not selected_date:
-        return render_template(
-            "arrange.html",
-            error="تاریخ باید بین ۱۴۰۵/۰۵/۲۴ تا ۱۴۰۵/۰۶/۰۶ باشد."
-        )
-
-    if not selected_time:
+    if not selected_date or not selected_time:
         return render_template(
             "arrange.html",
             error="لطفاً تاریخ و ساعت را انتخاب کن."
         )
 
-    if not cafe_name or not cafe_area:
+    if not phone:
         return render_template(
             "cofe.html",
             date=selected_date,
             time=selected_time,
-            error="لطفاً نام کافه و محله را وارد کن."
-        )
-
-    with get_db_connection() as connection:
-        connection.execute(
-            """
-            INSERT INTO final_date (
-                selected_date,
-                selected_time,
-                cafe_name,
-                cafe_area,
-                latitude,
-                longitude,
-                phone
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                selected_date,
-                selected_time,
-                cafe_name,
-                cafe_area,
-                latitude,
-                longitude,
-                phone,
-            )
-        )
-
-    weekday = get_weekday_name(selected_date)
-
-    return render_template(
-        "thanks.html",
-        date=selected_date,
-        time=selected_time,
-        weekday=weekday,
-        cafe_name=cafe_name,
-        cafe_area=cafe_area,
-        latitude=latitude,
-        longitude=longitude,
-        phone=phone,
-    )
-
-
-# =========================================================
-# بررسی سلامت برنامه
-# =========================================================
-
-@app.get("/health")
-def health():
-    return {
-        "status": "ok"
-    }, 200
-
-
-# =========================================================
-# صفحه خطای 404
-# =========================================================
-
-@app.errorhandler(404)
-def page_not_found(error):
-    return render_template(
-        "error.html",
-        message="صفحه موردنظر پیدا نشد."
-    ), 404
-
-
-# =========================================================
-# اجرای برنامه
-# =========================================================
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-
-    app.run(
-        host="0.0.0.0",
-        port=port,
-        debug=False
-    )
+            error="لطفاً 
