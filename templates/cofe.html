@@ -1,47 +1,128 @@
 {% extends "base.html" %}
+
+{% block title %}پیشنهاد کافه{% endblock %}
+
+{% block head %}
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+>
+{% endblock %}
+
 {% block content %}
 <div class="hero">
-    <div class="card romantic-card" style="width: min(800px, 95%);">
-        <div class="badge">کجا بریم؟ ☕</div>
+    <div class="card romantic-card cafe-card">
+        <div class="heart">☕</div>
+
+        <div class="badge">انتخاب مکان قرار</div>
+
         <h1>پیشنهادت برای کافه چیه؟</h1>
-        
-        <form action="{{ url_for('submit_final') }}" method="POST">
+
+        <p class="subtitle">
+            تو کافه و محله‌ای که دوست داری رو پیشنهاد بده 💗
+        </p>
+
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form
+            action="{{ url_for('submit_final') }}"
+            method="POST"
+            onsubmit="return validateCafeForm();"
+        >
             <input type="hidden" name="date" value="{{ date }}">
             <input type="hidden" name="time" value="{{ time }}">
+
             <input type="hidden" name="lat" id="lat">
             <input type="hidden" name="lng" id="lng">
 
-            <div class="row" style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <div style="flex: 1;">
-                    <label>اسم کافه:</label>
-                    <input type="text" name="cafe_name" placeholder="مثلاً کافه وصال" required>
+            <div class="cafe-fields">
+                <div class="cafe-box">
+                    <label for="cafe_name">اسم کافه</label>
+
+                    <input
+                        type="text"
+                        id="cafe_name"
+                        name="cafe_name"
+                        placeholder="مثلاً کافه ویونا"
+                        required
+                    >
                 </div>
-                <div style="flex: 1;">
-                    <label>کدوم محله؟</label>
-                    <input type="text" name="cafe_area" placeholder="مثلاً سعادت‌آباد" required>
+
+                <div class="cafe-box">
+                    <label for="cafe_area">اسم محله</label>
+
+                    <input
+                        type="text"
+                        id="cafe_area"
+                        name="cafe_area"
+                        placeholder="مثلاً سعادت‌آباد"
+                        required
+                    >
                 </div>
             </div>
 
-            <label>اگه لوکیشن دقیق داری روی نقشه بزن:</label>
-            <div id="map" style="height: 250px; border-radius: 15px; margin-bottom: 20px; border: 2px solid var(--soft);"></div>
+            <div class="map-title">
+                اگر لوکیشن دقیق کافه را می‌دانی، روی نقشه انتخابش کن:
+            </div>
 
-            <button type="submit" class="yes-btn" style="width: 100%;">ثبت نهایی قرار 💗</button>
+            <div id="map"></div>
+
+            <p id="mapHint" class="map-hint">
+                برای انتخاب مکان، روی نقشه کلیک کن 📍
+            </p>
+
+            <button type="submit" class="yes-btn full-width">
+                ثبت نهایی قرار 💕
+            </button>
         </form>
     </div>
 </div>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-    var map = L.map('map').setView([35.6892, 51.3890], 12); // مرکز تهران
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-    var marker;
 
-    map.on('click', function(e) {
-        if (marker) { map.removeLayer(marker); }
-        marker = L.marker(e.latlng).addTo(map);
-        document.getElementById('lat').value = e.latlng.lat;
-        document.getElementById('lng').value = e.latlng.lng;
+<script>
+    const map = L.map("map").setView([35.6892, 51.3890], 12);
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            attribution: "&copy; OpenStreetMap contributors"
+        }
+    ).addTo(map);
+
+    let marker = null;
+
+    map.on("click", function (event) {
+        if (marker !== null) {
+            map.removeLayer(marker);
+        }
+
+        marker = L.marker(event.latlng).addTo(map);
+
+        document.getElementById("lat").value =
+            event.latlng.lat.toFixed(6);
+
+        document.getElementById("lng").value =
+            event.latlng.lng.toFixed(6);
+
+        document.getElementById("mapHint").textContent =
+            "لوکیشن انتخاب شد 📍";
     });
+
+    function validateCafeForm() {
+        const lat = document.getElementById("lat").value;
+        const lng = document.getElementById("lng").value;
+
+        if (!lat || !lng) {
+            alert("لطفاً محل کافه را روی نقشه انتخاب کن.");
+            return false;
+        }
+
+        return true;
+    }
 </script>
 {% endblock %}
