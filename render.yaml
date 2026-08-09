@@ -1,7 +1,10 @@
 services:
   - type: web
-    name: date-booking-demo
-    env: python
+    name: date-booking-site
+    runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
     healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
