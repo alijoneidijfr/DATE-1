@@ -466,3 +466,63 @@ textarea::placeholder {
 .admin-form {
     max-width: 360px;
 }
+.phone-box {
+    background: rgba(255, 240, 247, 0.95);
+    border: 2px solid #f3a9c5;
+    text-align: center;
+}
+
+.phone-box label {
+    display: block;
+    color: #8f124c;
+    font-size: 1.05rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.phone-box input[type="tel"] {
+    direction: ltr;
+    text-align: center;
+    color: #4b2036;
+    font-size: 1.05rem;
+    font-weight: 700;
+    opacity: 1;
+    background: #ffffff;
+    border: 2px solid #e8a0bd;
+}
+
+.phone-box small {
+    display: block;
+    margin-top: 10px;
+    color: #6d304b;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.9;
+    opacity: 1;
+    text-align: center;
+}
+
+/* صفحه بعد / باکس شماره و آیدی */
+.contact-box {
+    text-align: center;
+    padding: 18px;
+    margin-top: 16px;
+    background: rgba(255, 240, 247, 0.9);
+    border: 1px solid var(--soft);
+    border-radius: 18px;
+}
+
+.contact-box p,
+.contact-box a,
+.contact-box span {
+    display: block;
+    text-align: center;
+    margin: 6px 0;
+}
+
+.contact-box .phone,
+.contact-box .instagram {
+    font-weight: 800;
+    color: var(--pink-dark);
+}
