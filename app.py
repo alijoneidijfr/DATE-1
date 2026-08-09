@@ -1,6 +1,7 @@
 import os
 import sqlite3
 from pathlib import Path
+from datetime import date as gregorian_date
 from flask import Flask, render_template, request
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -29,7 +30,67 @@ def init_db():
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
+        
+        # اطمینان از وجود ستون تلفن در دیتابیس‌های قدیمی
+        columns = conn.execute("PRAGMA table_info(final_date)").fetchall()
+        column_names = [col["name"] for col in columns]
+        if "phone" not in column_names:
+            conn.execute("ALTER TABLE final_date ADD COLUMN phone TEXT DEFAULT ''")
 init_db()
+
+def jalali_to_gregorian(jy, jm, jd):
+    jy += 1595
+    days = -355668 + (365 * jy) + ((jy // 33) * 8) + (((jy % 33) + 3) // 4) + jd
+    if jm < 7:
+        days += (jm - 1) * 31
+    else:
+        days += ((jm - 7) * 30) + 186
+
+    gy = 400 * (days // 146097)
+    days %= 146097
+
+    if days > 36524:
+        days -= 1
+        gy += 100 * (days // 36524)
+        days %= 36524
+        if days >= 365:
+            days += 1
+
+    gy += 4 * (days // 1461)
+    days %= 1461
+
+    if days > 365:
+        gy += (days - 1) // 365
+        days = (days - 1) % 365
+
+    gd = days + 1
+    if gd > 365:
+        gd -= 365
+        gy += 1
+
+    month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    if gy % 4 == 0 and (gy % 100 != 0 or gy % 400 == 0):
+        month_days[1] = 29
+
+    gm = 1
+    while gd > month_days[gm - 1]:
+        gd -= month_days[gm - 1]
+        gm += 1
+
+    return gy, gm, gd
+
+def get_weekday_name(jalali_date):
+    try:
+        parts = jalali_date.replace("-", "/").split("/")
+        if len(parts) != 3:
+            return ""
+        jy, jm, jd = map(int, parts)
+        gy, gm, gd = jalali_to_gregorian(jy, jm, jd)
+        weekday_index = gregorian_date(gy, gm, gd).weekday()
+        weekdays = ["دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه", "یکشنبه"]
+        return weekdays[weekday_index]
+    except Exception:
+        return ""
 
 @app.get("/")
 def index():
@@ -46,18 +107,23 @@ def arrange():
     if not date or not time:
         return render_template("arrange.html", error="لطفاً تاریخ و ساعت را انتخاب کن.")
     
-    # اصلاح نام قالب به cofe.html مطابق با فایل موجود در زیپ شما
     return render_template("cofe.html", date=date, time=time)
 
 @app.post("/submit-final")
 def submit_final():
-    date = request.form.get("date")
-    time = request.form.get("time")
-    cafe_name = request.form.get("cafe_name", "")
-    cafe_area = request.form.get("cafe_area", "")
-    lat = request.form.get("lat", "")
-    lng = request.form.get("lng", "")
-    phone = request.form.get("phone", "")
+    date = request.form.get("date", "").strip()
+    time = request.form.get("time", "").strip()
+    cafe_name = request.form.get("cafe_name", "").strip()
+    cafe_area = request.form.get("cafe_area", "").strip()
+    lat = request.form.get("lat", "").strip()
+    lng = request.form.get("lng", "").strip()
+    phone = request.form.get("phone", "").strip()
+
+    if not date or not time:
+        return render_template("arrange.html", error="لطفاً تاریخ و ساعت را انتخاب کن.")
+        
+    if not cafe_name or not cafe_area:
+        return render_template("cofe.html", date=date, time=time, error="لطفاً نام کافه و محله را وارد کن.")
 
     with get_db_connection() as conn:
         conn.execute("""
@@ -65,8 +131,19 @@ def submit_final():
             VALUES (?, ?, ?, ?, ?, ?, ?)
         """, (date, time, cafe_name, cafe_area, lat, lng, phone))
     
-    return render_template("thanks.html", date=date, time=time, cafe_name=cafe_name, 
-                           cafe_area=cafe_area, latitude=lat, longitude=lng, phone=phone)
+    weekday = get_weekday_name(date)
+    
+    return render_template(
+        "thanks.html", 
+        date=date, 
+        time=time, 
+        weekday=weekday,
+        cafe_name=cafe_name, 
+        cafe_area=cafe_area, 
+        latitude=lat, 
+        longitude=lng, 
+        phone=phone
+    )
 
 @app.get("/health")
 def health():
