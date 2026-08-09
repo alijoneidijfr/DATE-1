@@ -4,7 +4,7 @@ from datetime import datetime
 from functools import wraps
 from pathlib import Path
 
-from flask import Flask, abort, flash, redirect, render_template, request, session, url_for
+from flask import Flask, flash, redirect, render_template, request, session, url_for
 
 BASE_DIR = Path(__file__).resolve().parent
 DATABASE_PATH = BASE_DIR / "database.db"
@@ -54,6 +54,11 @@ def index():
     return render_template("index.html")
 
 
+@app.get("/reservation")
+def reservation():
+    return render_template("booking.html")
+
+
 @app.post("/book")
 def book():
     name = request.form.get("name", "").strip()
@@ -63,36 +68,48 @@ def book():
 
     if not all((name, phone, booking_date, booking_time)):
         flash("همهٔ فیلدها را کامل کن.", "error")
-        return redirect(url_for("index"))
+        return redirect(url_for("reservation"))
 
     try:
         hour = int(booking_time.split(":", 1)[0])
     except (ValueError, IndexError):
         flash("ساعت انتخاب‌شده معتبر نیست.", "error")
-        return redirect(url_for("index"))
+        return redirect(url_for("reservation"))
 
     if hour < 16 or hour > 22:
         flash("رزرو فقط بین ساعت ۱۶:۰۰ تا ۲۲:۰۰ امکان‌پذیر است.", "error")
-        return redirect(url_for("index"))
+        return redirect(url_for("reservation"))
 
     with get_db_connection() as connection:
         conflict = connection.execute(
             "SELECT id FROM bookings WHERE booking_date = ? AND booking_time = ?",
             (booking_date, booking_time),
         ).fetchone()
+
         if conflict:
             flash("این روز و ساعت قبلاً رزرو شده است؛ زمان دیگری انتخاب کن.", "error")
-            return redirect(url_for("index"))
+            return redirect(url_for("reservation"))
 
         connection.execute(
             """
             INSERT INTO bookings (name, phone, booking_date, booking_time, created_at)
             VALUES (?, ?, ?, ?, ?)
             """,
-            (name, phone, booking_date, booking_time, datetime.now().isoformat(timespec="seconds")),
+            (
+                name,
+                phone,
+                booking_date,
+                booking_time,
+                datetime.now().isoformat(timespec="seconds"),
+            ),
         )
 
-    return render_template("success.html", name=name, booking_date=booking_date, booking_time=booking_time)
+    return render_template(
+        "success.html",
+        name=name,
+        booking_date=booking_date,
+        booking_time=booking_time,
+    )
 
 
 @app.route("/admin/login", methods=["GET", "POST"])
@@ -134,6 +151,7 @@ def delete_booking(booking_id):
 def admin_logout():
     session.clear()
     return redirect(url_for("admin_login"))
+
 
 @app.get("/health")
 def health():
