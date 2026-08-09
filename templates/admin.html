@@ -21,7 +21,16 @@
                 <p><strong>ساعت:</strong> {{ booking.booking_time }}</p>
                 <p><strong>شماره:</strong> {{ booking.phone }}</p>
                 <p><strong>محله:</strong> {{ booking.cafe_area }}</p>
-                <p><strong>زمان ثبت:</strong> {{ booking.created_at }}</p>
+                
+                {% if booking.latitude and booking.longitude %}
+                <p><strong>موقعیت:</strong> 
+                    <a href="https://www.google.com/maps?q={{ booking.latitude }},{{ booking.longitude }}" target="_blank" style="color: #e91e63; font-weight: bold;">مشاهده روی نقشه 📍</a>
+                </p>
+                {% else %}
+                <p><strong>موقعیت:</strong> ثبت نشده</p>
+                {% endif %}
+
+                <p style="font-size: 0.8rem; color: #888;"><strong>زمان ثبت:</strong> {{ booking.created_at }}</p>
 
                 <form action="{{ url_for('delete_booking', booking_id=booking.id) }}" method="post" onsubmit="return confirm('این رزرو حذف شود؟');">
                     <button class="delete-button" type="submit">حذف</button>
