@@ -372,3 +372,52 @@ textarea:focus {
         height: 280px;
     }
 }
+.required-mark {
+    color: var(--pink);
+    font-weight: 800;
+}
+
+.cafe-fields input {
+    color: var(--text);
+    opacity: 1;
+    border: 1px solid var(--soft);
+    background: #ffffff;
+}
+
+.cafe-fields input:focus {
+    border-color: var(--pink);
+    box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.12);
+}
+
+.phone-box {
+    background: rgba(255, 240, 247, 0.8);
+    border: 1px solid var(--soft);
+}
+
+.light-field input {
+    color: #a9939e;
+    opacity: 0.55;
+    border: 1px solid #f0c6d5;
+    background: #ffffff;
+}
+
+.light-field input:focus {
+    color: var(--text);
+    opacity: 1;
+    border-color: var(--pink);
+    box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.12);
+}
+
+.light-field small {
+    display: block;
+    margin-top: 8px;
+    color: #a9939e;
+    font-size: 0.82rem;
+}
+
+.optional-text {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
