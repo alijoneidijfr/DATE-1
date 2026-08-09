@@ -1,17 +1,28 @@
 {% extends "base.html" %}
 
-{% block title %}دعوت به قرار{% endblock %}
+{% block title %}یک سؤال مهم{% endblock %}
 
 {% block content %}
 <div class="hero">
     <div class="card romantic-card">
-        <div class="badge">دعوت ویژه</div>
+        <div class="heart">💗</div>
+
+        <div class="badge">یک دعوت خاص</div>
+
         <h1>با من میای سرِ قرار؟</h1>
-        <p class="subtitle">فقط یه جواب قشنگ می‌خوام :)</p>
+
+        <p class="subtitle">
+            یه قرار قشنگ می‌تونه شروع یه خاطره قشنگ‌تر باشه :)
+        </p>
 
         <div class="button-row">
-            <button id="yesBtn" class="yes-btn" type="button">بله</button>
-            <button id="noBtn" class="no-btn" type="button">نه</button>
+            <button id="yesBtn" class="yes-btn" type="button">
+                بله 💕
+            </button>
+
+            <button id="noBtn" class="no-btn" type="button">
+                نه
+            </button>
         </div>
 
         <p id="message" class="message"></p>
@@ -26,29 +37,40 @@
     let yesScale = 1;
     let noCount = 0;
 
-    noBtn.addEventListener("click", () => {
-        noCount += 1;
-        yesScale += 0.18;
+    const messages = [
+        "یه بار دیگه فکر کن 😌",
+        "مطمئنی؟ قرارمون می‌تونه خیلی خوب بشه 💗",
+        "بله داره بزرگ‌تر می‌شه 🙂",
+        "فکر کنم ته دلت می‌خوای بگی بله!",
+        "دیگه انتخاب خیلی آسونه 💕"
+    ];
+
+    noBtn.addEventListener("click", function () {
+        noCount++;
+
+        yesScale = Math.min(1 + noCount * 0.18, 3.2);
 
         yesBtn.style.transform = `scale(${yesScale})`;
-        yesBtn.style.boxShadow = `0 14px 30px rgba(255, 105, 180, ${0.18 + noCount * 0.06})`;
 
-        if (yesScale > 1.9) {
-            noBtn.style.opacity = "0.35";
-            noBtn.style.transform = "scale(0.85)";
-            message.textContent = "فکر کنم جواب درست همون بله‌ست 💗";
-        } else {
-            const texts = [
-                "یه بار دیگه فکر کن 😌",
-                "هنوزم نظرت عوض نشده؟",
-                "بله داره خوشگل‌تر میشه 🙂",
-                "تقریباً رسیده‌ایم!",
-            ];
-            message.textContent = texts[Math.min(noCount - 1, texts.length - 1)];
+        noBtn.style.transform = `scale(${Math.max(
+            1 - noCount * 0.08,
+            0.65
+        )})`;
+
+        noBtn.style.opacity = Math.max(
+            1 - noCount * 0.1,
+            0.45
+        );
+
+        message.textContent =
+            messages[Math.min(noCount - 1, messages.length - 1)];
+
+        if (noCount >= 8) {
+            noBtn.textContent = "شاید بله؟";
         }
     });
 
-    yesBtn.addEventListener("click", () => {
+    yesBtn.addEventListener("click", function () {
         window.location.href = "{{ url_for('arrange') }}";
     });
 </script>
