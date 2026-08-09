@@ -30,10 +30,9 @@
                     name="date"
                     id="date_input"
                     data-jdp
-                    data-jdp-min-date="1405/05/24"
-                    data-jdp-max-date="1405/06/31"
                     placeholder="برای انتخاب تاریخ کلیک کن"
                     autocomplete="off"
+                    readonly
                     required
                 >
             </div>
@@ -69,21 +68,34 @@
 
 <link
     rel="stylesheet"
-    href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css"
+    href="https://cdn.jsdelivr.net/npm/@majidh1/jalalidatepicker@0.10.0/dist/jalalidatepicker.min.css"
 >
 
-<script src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@majidh1/jalalidatepicker@0.10.0/dist/jalalidatepicker.min.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    if (typeof jalaliDatepicker !== "undefined") {
-        jalaliDatepicker.startWatch({
-            minDate: "1405/05/24",
-            maxDate: "1405/06/31"
-        });
-    } else {
-        console.error("کتابخانه jalaliDatepicker بارگذاری نشده است.");
+window.addEventListener("load", function () {
+    const dateInput = document.getElementById("date_input");
+
+    if (!dateInput) {
+        console.error("فیلد تاریخ پیدا نشد.");
+        return;
     }
+
+    if (
+        typeof jalaliDatepicker === "undefined" ||
+        typeof jalaliDatepicker.startWatch !== "function"
+    ) {
+        console.error("کتابخانه Jalali Datepicker بارگذاری نشده است.");
+        return;
+    }
+
+    jalaliDatepicker.startWatch({
+        minDate: "1405/05/24",
+        maxDate: "1405/06/31",
+        autoShow: false,
+        hideAfterChange: true
+    });
 });
 </script>
 {% endblock %}
