@@ -5,6 +5,7 @@
   <div class="brand">پنل مدیریت</div>
   <h1>ورود مدیر</h1>
   <p class="lead">برای مشاهده و مدیریت رزروها رمز را وارد کن.</p>
+  {% if error %}<div class="error-message">{{ error }}</div>{% endif %}
   <form class="booking-form" method="post">
     <label>رمز عبور
       <input name="password" type="password" autocomplete="current-password" required>

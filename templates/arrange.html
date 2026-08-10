@@ -38,121 +38,23 @@
                 <div class="date-table-wrapper">
                     <table class="date-table">
                         <tbody>
+                            {% for row_start in range(0, dates|length, 7) %}
                             <tr>
+                                {% for item in dates[row_start:row_start + 7] %}
                                 <td>
                                     <button type="button" class="date-btn"
-                                            data-date="1405/05/24">
-                                        <span>۲۴</span>
-                                        <small>مرداد</small>
+                                            data-date="{{ item.value }}"
+                                            aria-pressed="false">
+                                        <span>{{ item.day }}</span>
+                                        <small>{{ item.month }}</small>
                                     </button>
                                 </td>
-
-                                <td>
-                                    <button type="button" class="date-btn"
-                                            data-date="1405/05/25">
-                                        <span>۲۵</span>
-                                        <small>مرداد</small>
-                                    </button>
-                                </td>
-
-                                <td>
-                                    <button type="button" class="date-btn"
-                                            data-date="1405/05/26">
-                                        <span>۲۶</span>
-                                        <small>مرداد</small>
-                                    </button>
-                                </td>
-
-                                <td>
-                                    <button type="button" class="date-btn"
-                                            data-date="1405/05/27">
-                                        <span>۲۷</span>
-                                        <small>مرداد</small>
-                                    </button>
-                                </td>
-
-                                <td>
-                                    <button type="button" class="date-btn"
-                                            data-date="1405/05/28">
-                                        <span>۲۸</span>
-                                        <small>مرداد</small>
-                                    </button>
-                                </td>
-
-                                <td>
-                                    <button type="button" class="date-btn"
-                                            data-date="1405/05/29">
-                                        <span>۲۹</span>
-                                        <small>مرداد</small>
-                                    </button>
-                                </td>
-
-                                <td>
-                                    <button type="button" class="date-btn"
-                                            data-date="1405/05/30">
-                                        <span>۳۰</span>
-                                        <small>مرداد</small>
-                                    </button>
-                                </td>
+                                {% endfor %}
+                                {% for _ in range(7 - (dates[row_start:row_start + 7]|length)) %}
+                                <td></td>
+                                {% endfor %}
                             </tr>
-
-                            <tr>
-                                <td>
-                                    <button type="button" class="date-btn"
-                                            data-date="1405/05/31">
-                                        <span>۳۱</span>
-                                        <small>مرداد</small>
-                                    </button>
-                                </td>
-
-                                <td>
-                                    <button type="button" class="date-btn"
-                                            data-date="1405/06/01">
-                                        <span>۱</span>
-                                        <small>شهریور</small>
-                                    </button>
-                                </td>
-
-                                <td>
-                                    <button type="button" class="date-btn"
-                                            data-date="1405/06/02">
-                                        <span>۲</span>
-                                        <small>شهریور</small>
-                                    </button>
-                                </td>
-
-                                <td>
-                                    <button type="button" class="date-btn"
-                                            data-date="1405/06/03">
-                                        <span>۳</span>
-                                        <small>شهریور</small>
-                                    </button>
-                                </td>
-
-                                <td>
-                                    <button type="button" class="date-btn"
-                                            data-date="1405/06/04">
-                                        <span>۴</span>
-                                        <small>شهریور</small>
-                                    </button>
-                                </td>
-
-                                <td>
-                                    <button type="button" class="date-btn"
-                                            data-date="1405/06/05">
-                                        <span>۵</span>
-                                        <small>شهریور</small>
-                                    </button>
-                                </td>
-
-                                <td>
-                                    <button type="button" class="date-btn"
-                                            data-date="1405/06/06">
-                                        <span>۶</span>
-                                        <small>شهریور</small>
-                                    </button>
-                                </td>
-                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
 
@@ -171,26 +73,12 @@
                     <option value="" disabled selected>
                         ساعت را انتخاب کن
                     </option>
-                    <!-- ساعات صبحگاهی -->
-                    <option value="08:30">۰۸:۳۰</option>
-                    <option value="09:00">۰۹:۰۰</option>
-                    <option value="09:30">۰۹:۳۰</option>
-                    <option value="10:00">۱۰:۰۰</option>
-                    <option value="10:30">۱۰:۳۰</option>
-                    <option value="11:00">۱۱:۰۰</option>
-                    
-                    <!-- فاصله زمانی -->
-                    <option value="" disabled>---</option> <!-- جداکننده بصری -->
-
-                    <!-- ساعات بعد از ظهر -->
-                    <option value="14:30">۱۴:۳۰</option>
-                    <option value="15:00">۱۵:۰۰</option>
-                    <option value="15:30">۱۵:۳۰</option>
-                    <option value="16:00">۱۶:۰۰</option>
-                    <option value="16:30">۱۶:۳۰</option>
-                    <option value="17:00">۱۷:۰۰</option>
-                    <option value="17:30">۱۷:۳۰</option>
-                    <option value="18:00">۱۸:۰۰</option>
+                    {% for time in time_options %}
+                    <option value="{{ time }}">{{ time }}</option>
+                    {% if time == '11:00' %}
+                    <option value="" disabled>---</option>
+                    {% endif %}
+                    {% endfor %}
                 </select>
             </div>
 

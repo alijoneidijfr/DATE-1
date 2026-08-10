@@ -24,8 +24,8 @@
         <form action="{{ url_for('submit_final') }}" method="POST">
             <input type="hidden" name="date" value="{{ date }}">
             <input type="hidden" name="time" value="{{ time }}">
-            <input type="hidden" name="lat" id="lat" value="">
-            <input type="hidden" name="lng" id="lng" value="">
+            <input type="hidden" name="latitude" id="latitude" value="">
+            <input type="hidden" name="longitude" id="longitude" value="">
 
             <div class="cafe-fields">
                 <div class="form-group">
@@ -45,7 +45,7 @@
 
             <div class="phone-box light-field">
                 <label for="phone">شماره تماس جهت هماهنگی</label>
-                <input id="phone" type="tel" name="phone" value="+989190118068" required>
+                <input id="phone" type="tel" name="phone" value="{{ default_phone }}" required>
                 <small>اگه لازمه می‌تونی تغییرش بدی :)</small>
             </div>
 
@@ -70,8 +70,8 @@
     map.on("click", function (e) {
         if (marker) map.removeLayer(marker);
         marker = L.marker(e.latlng).addTo(map);
-        document.getElementById("lat").value = e.latlng.lat.toFixed(6);
-        document.getElementById("lng").value = e.latlng.lng.toFixed(6);
+        document.getElementById("latitude").value = e.latlng.lat.toFixed(6);
+        document.getElementById("longitude").value = e.latlng.lng.toFixed(6);
     });
 </script>
 {% endblock %}
