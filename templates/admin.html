@@ -1,64 +1,37 @@
 {% extends "base.html" %}
 
-{% block title %}پنل مدیریت رزروها{% endblock %}
+{% block title %}مدیریت رزروها{% endblock %}
 
 {% block content %}
-<div class="admin-page">
-    <section class="admin-panel">
-        <div class="admin-topbar">
-            <div class="admin-title-box">
-                <div class="admin-icon">📋</div>
-                <div>
-                    <h1>رزروهای ثبت‌شده</h1>
-                    <p>مدیریت اطلاعات قرارها</p>
-                </div>
-            </div>
+<div class="hero">
+    <div class="card romantic-card">
+        <div class="badge">پنل مدیریت</div>
+        <h1>لیست رزروها</h1>
 
-            <a class="admin-logout-btn" href="{{ url_for('logout') }}">
-                خروج
-            </a>
-        </div>
+        <form action="{{ url_for('admin_logout') }}" method="post" style="margin-bottom: 20px;">
+            <button class="secondary-button" type="submit">خروج</button>
+        </form>
 
         {% if bookings %}
-        <div class="admin-table-wrap">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>ردیف</th>
-                        <th>نام</th>
-                        <th>تلفن</th>
-                        <th>تاریخ</th>
-                        <th>ساعت</th>
-                        <th>عملیات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for booking in bookings %}
-                    <tr>
-                        <td>{{ booking['id'] }}</td>
-                        <td>{{ booking['name'] or '—' }}</td>
-                        <td>{{ booking['phone'] or '—' }}</td>
-                        <td>{{ booking['date'] or '—' }}</td>
-                        <td>{{ booking['time'] or '—' }}</td>
-                        <td>
-                            <form
-                                method="POST"
-                                action="{{ url_for('delete', id=booking['id']) }}"
-                                onsubmit="return confirm('این رزرو حذف شود؟');"
-                            >
-                                <button type="submit" class="delete-button">
-                                    حذف
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="admin-list">
+            {% for booking in bookings %}
+            <div class="booking-card" style="background: rgba(255,255,255,0.8); border: 1px solid #f3c1d3; border-radius: 18px; padding: 18px; margin-bottom: 14px;">
+                <p><strong>نام کافه:</strong> {{ booking.name }}</p>
+                <p><strong>تاریخ:</strong> {{ booking.booking_date }}</p>
+                <p><strong>ساعت:</strong> {{ booking.booking_time }}</p>
+                <p><strong>شماره:</strong> {{ booking.phone }}</p>
+                <p><strong>محله:</strong> {{ booking.cafe_area }}</p>
+                <p><strong>زمان ثبت:</strong> {{ booking.created_at }}</p>
+
+                <form action="{{ url_for('delete_booking', booking_id=booking.id) }}" method="post" onsubmit="return confirm('این رزرو حذف شود؟');">
+                    <button class="delete-button" type="submit">حذف</button>
+                </form>
+            </div>
+            {% endfor %}
         </div>
         {% else %}
-        <p class="empty-message">هنوز هیچ رزروی ثبت نشده است.</p>
+        <p>هنوز رزروی ثبت نشده است.</p>
         {% endif %}
-    </section>
+    </div>
 </div>
 {% endblock %}
