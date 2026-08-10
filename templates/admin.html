@@ -1,137 +1,100 @@
 {% extends "base.html" %}
 
-{% block title %}مدیریت رزروها{% endblock %}
+{% block title %}پنل مدیریت رزروها{% endblock %}
 
 {% block content %}
-<section class="admin-card fade-in">
-    <header class="admin-header">
-        <div>
-            <div class="brand">پنل مدیریت</div>
-            <h1>رزروهای ثبت‌شده</h1>
-        </div>
-
-        <form
-            action="{{ url_for('admin_logout') }}"
-            method="post"
-        >
-            <button
-                class="secondary-button"
-                type="submit"
-            >
-                خروج
-            </button>
-        </form>
-    </header>
-
-    {% if bookings %}
-    <div class="table-wrap">
-        <table>
-            <thead>
-                <tr>
-                    <th>نام کافه</th>
-                    <th>محله</th>
-                    <th>تلفن</th>
-                    <th>تاریخ</th>
-                    <th>ساعت</th>
-                    <th>لوکیشن</th>
-                    <th>عملیات</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for booking in bookings %}
-                <tr>
-                    <td>{{ booking.name }}</td>
-
-                    <td>{{ booking.cafe_area }}</td>
-
-                    <td>{{ booking.phone }}</td>
-
-                    <td>{{ booking.booking_date }}</td>
-
-                    <td>{{ booking.booking_time }}</td>
-
-                    <td>
-                        {% if booking.latitude and booking.longitude %}
-                        <a
-                            href="https://www.google.com/maps?q={{ booking.latitude }},{{ booking.longitude }}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="location-link"
-                        >
-                            مشاهده روی نقشه 📍
-                        </a>
-
-                        <div class="coordinates">
-                            {{ booking.latitude }},
-                            {{ booking.longitude }}
-                        </div>
-                        {% else %}
-                        <span class="location-missing">
-                            ثبت نشده
-                        </span>
-                        {% endif %}
-                    </td>
-
-                    <td>
-                        <form
-                            action="{{ url_for('delete_booking', booking_id=booking.id) }}"
-                            method="post"
-                            onsubmit="return confirm('این رزرو حذف شود؟');"
-                        >
-                            <button
-                                class="delete-button"
-                                type="submit"
-                            >
-                                حذف
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% else %}
-    <p class="empty-state">
-        هنوز هیچ رزروی ثبت نشده است.
-    </p>
-    {% endif %}
-</section>
 
 <style>
-    .location-link {
-        color: #e91e63;
+    /* فقط مخصوص صفحه admin.html */
+    .admin-page {
+        width: min(1150px, 94%);
+        margin: 40px auto;
+    }
+
+    .admin-panel {
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid #f4c8d9;
+        border-radius: 24px;
+        padding: 26px;
+        box-shadow: 0 12px 35px rgba(169, 58, 108, 0.12);
+    }
+
+    .admin-topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding-bottom: 20px;
+        margin-bottom: 22px;
+        border-bottom: 1px solid #f5d7e2;
+    }
+
+    .admin-title-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .admin-icon {
+        width: 48px;
+        height: 48px;
+        display: grid;
+        place-items: center;
+        border-radius: 15px;
+        background: #fff0f5;
+        font-size: 1.5rem;
+    }
+
+    .admin-title-box h1 {
+        margin: 0;
+        color: #7d264e;
+        font-size: 1.45rem;
+    }
+
+    .admin-title-box p {
+        margin: 5px 0 0;
+        color: #9e7182;
+        font-size: 0.88rem;
+    }
+
+    .admin-logout-btn {
+        appearance: none;
+        border: 0;
+        border-radius: 12px;
+        padding: 10px 16px;
+        cursor: pointer;
+        color: #8e3156;
+        background: #fff0f4;
+        font-family: inherit;
+        font-size: 0.9rem;
+        transition: 0.2s ease;
+    }
+
+    .admin-logout-btn:hover {
+        background: #fbd8e4;
+        transform: translateY(-1px);
+    }
+
+    .admin-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        border: 1px solid #f5dce5;
+        border-radius: 17px;
+    }
+
+    .admin-table {
+        width: 100%;
+        min-width: 930px;
+        border-collapse: collapse;
+        text-align: right;
+    }
+
+    .admin-table th {
+        padding: 15px 14px;
+        background: #fff3f7;
+        color: #873151;
+        font-size: 0.88rem;
         font-weight: 800;
-        text-decoration: none;
         white-space: nowrap;
     }
 
-    .location-link:hover {
-        text-decoration: underline;
-    }
-
-    .coordinates {
-        direction: ltr;
-        color: #888;
-        font-size: 0.72rem;
-        margin-top: 5px;
-        white-space: nowrap;
-    }
-
-    .location-missing {
-        color: #999;
-        white-space: nowrap;
-    }
-
-    @media (max-width: 700px) {
-        .table-wrap {
-            overflow-x: auto;
-        }
-
-        table {
-            min-width: 850px;
-        }
-    }
-</style>
-{% endblock %}
