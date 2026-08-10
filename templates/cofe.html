@@ -4,16 +4,10 @@
 
 {% block content %}
 <div class="hero">
-    <div class="card romantic-card cafe-card">
-        <div class="heart">☕</div>
-
-        <div class="badge">انتخاب مکان قرار</div>
+    <div class="card romantic-card" style="width: min(800px, 95%);">
+        <div class="badge">کجا بریم؟ ☕</div>
 
         <h1>پیشنهادت برای کافه چیه؟</h1>
-
-        <p class="subtitle">
-            نام کافه و محله را وارد کن؛ انتخاب لوکیشن روی نقشه اختیاری است.
-        </p>
 
         {% if error %}
         <div class="error-message">
@@ -21,57 +15,162 @@
         </div>
         {% endif %}
 
-        <form action="{{ url_for('submit_final') }}" method="POST">
-            <input type="hidden" name="date" value="{{ date }}">
-            <input type="hidden" name="time" value="{{ time }}">
-            <input type="hidden" name="lat" id="lat" value="">
-            <input type="hidden" name="lng" id="lng" value="">
+        <form
+            action="{{ url_for('submit_final') }}"
+            method="POST"
+            id="cafe-form"
+        >
+            <input
+                type="hidden"
+                name="date"
+                value="{{ date }}"
+            >
 
-            <div class="cafe-fields">
-                <div class="form-group">
-                    <label for="cafe_name">نام کافه <span class="required-mark">*</span></label>
-                    <input id="cafe_name" type="text" name="cafe_name" required>
+            <input
+                type="hidden"
+                name="time"
+                value="{{ time }}"
+            >
+
+            <!-- مختصات انتخاب‌شده روی نقشه در این دو فیلد ذخیره می‌شود -->
+            <input
+                type="hidden"
+                name="lat"
+                id="lat"
+            >
+
+            <input
+                type="hidden"
+                name="lng"
+                id="lng"
+            >
+
+            <div
+                class="row"
+                style="display: flex; gap: 10px; margin-bottom: 15px;"
+            >
+                <div style="flex: 1;">
+                    <label for="cafe_name">اسم کافه:</label>
+
+                    <input
+                        type="text"
+                        id="cafe_name"
+                        name="cafe_name"
+                        required
+                    >
                 </div>
-                <div class="form-group">
-                    <label for="cafe_area">محله کافه <span class="required-mark">*</span></label>
-                    <input id="cafe_area" type="text" name="cafe_area" required>
+
+                <div style="flex: 1;">
+                    <label for="cafe_area">کدوم محله؟</label>
+
+                    <input
+                        type="text"
+                        id="cafe_area"
+                        name="cafe_area"
+                        required
+                    >
                 </div>
             </div>
 
-            <div class="cafe-box">
-                <p class="map-title">انتخاب لوکیشن کافه <span class="optional-text">(اختیاری)</span></p>
-                <div id="map"></div>
-            </div>
+            <label for="map">
+                لوکیشن دقیق کافه را روی نقشه انتخاب کن:
+            </label>
 
-            <div class="phone-box light-field">
-                <label for="phone">شماره تماس جهت هماهنگی</label>
-                <input id="phone" type="tel" name="phone" value="+989190118068" required>
-                <small>اگه لازمه می‌تونی تغییرش بدی :)</small>
-            </div>
+            <div
+                id="map"
+                style="
+                    height: 250px;
+                    border-radius: 15px;
+                    margin-bottom: 20px;
+                    border: 2px solid var(--soft);
+                "
+            ></div>
 
-            <div class="confirm-box">
-                <label class="checkbox-label">
-                    <input type="checkbox" required>
-                    <span>اطلاعات واردشده را تأیید می‌کنم.</span>
-                </label>
-            </div>
+            <p
+                id="location-status"
+                style="
+                    text-align: center;
+                    color: #9b4b72;
+                    font-size: 0.9rem;
+                    margin-bottom: 15px;
+                "
+            >
+                برای ثبت لوکیشن، روی نقطه‌ی موردنظر در نقشه کلیک کن 📍
+            </p>
 
-            <button type="submit" class="yes-btn full-width">ثبت نهایی قرار 💕</button>
+            <button
+                type="submit"
+                class="yes-btn"
+                style="width: 100%;"
+            >
+                ثبت نهایی قرار 💗
+            </button>
         </form>
     </div>
 </div>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
-    const map = L.map("map").setView([35.6892, 51.3890], 12);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+    const map = L.map("map").setView(
+        [35.6892, 51.3890],
+        12
+    );
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            attribution: "&copy; OpenStreetMap contributors"
+        }
+    ).addTo(map);
+
     let marker = null;
-    map.on("click", function (e) {
-        if (marker) map.removeLayer(marker);
-        marker = L.marker(e.latlng).addTo(map);
-        document.getElementById("lat").value = e.latlng.lat.toFixed(6);
-        document.getElementById("lng").value = e.latlng.lng.toFixed(6);
+
+    map.on("click", function (event) {
+        if (marker) {
+            map.removeLayer(marker);
+        }
+
+        marker = L.marker(event.latlng).addTo(map);
+
+        document.getElementById("lat").value =
+            event.latlng.lat.toString();
+
+        document.getElementById("lng").value =
+            event.latlng.lng.toString();
+
+        document.getElementById("location-status").textContent =
+            "لوکیشن انتخاب شد ✅";
+
+        document.getElementById("location-status").style.color =
+            "#c2185b";
     });
+
+    document.getElementById("cafe-form").addEventListener(
+        "submit",
+        function (event) {
+            const lat = document.getElementById("lat").value;
+            const lng = document.getElementById("lng").value;
+
+            if (!lat || !lng) {
+                event.preventDefault();
+
+                document.getElementById(
+                    "location-status"
+                ).textContent =
+                    "لطفاً ابتدا روی نقشه کلیک کن 📍";
+
+                document.getElementById(
+                    "location-status"
+                ).style.color = "#d32f2f";
+            }
+        }
+    );
 </script>
+
 {% endblock %}
