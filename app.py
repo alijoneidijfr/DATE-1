@@ -270,34 +270,33 @@ def submit_final():
         except ValueError:
             return render_template("error.html", error="لوکیشن انتخاب‌شده معتبر نیست.")
 
- with get_db_connection() as conn:
-    conn.execute("""
-        INSERT INTO final_date
-        (selected_date, selected_time, cafe_name, cafe_area, latitude, longitude, phone)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    """, (date_value, time_value, cafe_name, cafe_area, lat, lng, phone))
-    conn.commit()
+     with get_db_connection() as conn:
+        conn.execute("""
+            INSERT INTO final_date
+            (selected_date, selected_time, cafe_name, cafe_area, latitude, longitude, phone)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (date_value, time_value, cafe_name, cafe_area, lat, lng, phone))
+        conn.commit()
 
-# محاسبه روز هفته بر اساس تاریخ انتخاب‌شده
-selected_gregorian = parse_jalali(date_value)
-weekday_names = [
-    "دوشنبه", "سه‌شنبه", "چهارشنبه",
-    "پنجشنبه", "جمعه", "شنبه", "یکشنبه"
-]
-weekday = weekday_names[selected_gregorian.weekday()]
+    # محاسبه روز هفته بر اساس تاریخ انتخاب‌شده
+    selected_gregorian = parse_jalali(date_value)
+    weekday_names = [
+        "دوشنبه", "سه‌شنبه", "چهارشنبه",
+        "پنجشنبه", "جمعه", "شنبه", "یکشنبه"
+    ]
+    weekday = weekday_names[selected_gregorian.weekday()]
 
-return render_template(
-    "thanks.html",
-    date=date_value,
-    time=time_value,
-    cafe_name=cafe_name,
-    cafe_area=cafe_area,
-    latitude=lat,
-    longitude=lng,
-    phone=phone,
-    weekday=weekday,
-)
-
+    return render_template(
+        "thanks.html",
+        date=date_value,
+        time=time_value,
+        cafe_name=cafe_name,
+        cafe_area=cafe_area,
+        latitude=lat,
+        longitude=lng,
+        phone=phone,
+        weekday=weekday,
+    )
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
