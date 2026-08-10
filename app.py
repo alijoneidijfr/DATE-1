@@ -2,6 +2,7 @@ import os
 import sqlite3
 from pathlib import Path
 from functools import wraps
+from datetime import datetime
 
 from flask import Flask, render_template, request, redirect, url_for, session
 
@@ -21,7 +22,7 @@ def get_db_connection():
 
 
 def init_db():
-    with get_db_connection() as conn:
+    with get_db_connection() as conn:\
         conn.execute("""
             CREATE TABLE IF NOT EXISTS final_date (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,10 +56,25 @@ def init_db():
 init_db()
 
 
+def normalize_time_value(value: str) -> str:
+    value = (value or "").strip()
+    if not value:
+        return ""
+    try:
+        parts = value.split(":")
+        if len(parts) >= 2:
+            hour = int(parts[0])
+            minute = int(parts[1])
+            return f"{hour:02d}:{minute:02d}"
+    except Exception:
+        pass
+    return value
+
+
 def admin_required(view_func):
     @wraps(view_func)
-    def wrapper(*args, **kwargs):
-        if not session.get("admin_logged_in"):
+    def wrapper(*args, **kwargs):\
+        if not session.get("admin_logged_in"):\
             return redirect(url_for("admin_login"))
         return view_func(*args, **kwargs)
     return wrapper
@@ -89,7 +105,7 @@ def arrange():
 @app.post("/submit-final")
 def submit_final():
     date = request.form.get("date", "").strip()
-    time = request.form.get("time", "").strip()
+    time = normalize_time_value(request.form.get("time", ""))
     cafe_name = request.form.get("cafe_name", "").strip()
     cafe_area = request.form.get("cafe_area", "").strip()
     lat = request.form.get("latitude", "").strip()
@@ -119,13 +135,19 @@ def submit_final():
     )
 
 
+@app.get("/admin_panel")
+@admin_required
+def admin_panel():
+    with get_db_connection() as conn:
+        bookings = conn.execute("SELECT * FROM final_date ORDER BY created_at DESC").fetchall()
+    return render_template("admin.html", bookings=bookings)
+
+
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
     error = None
-
     if request.method == "POST":
-        password = request.form.get("password", "").strip()
-
+        password = request.form.get("password")
         if password == ADMIN_PASSWORD:
             session["admin_logged_in"] = True
             return redirect(url_for("admin_panel"))
@@ -135,49 +157,43 @@ def admin_login():
     return render_template("admin_login.html", error=error)
 
 
-@app.get("/admin")
-@admin_required
-def admin_panel():
-    with get_db_connection() as conn:
-        bookings = conn.execute("""
-            SELECT
-                id,
-                cafe_name AS name,
-                selected_date AS booking_date,
-                selected_time AS booking_time,
-                phone,
-                cafe_area,
-                latitude,
-                longitude,
-                created_at
-            FROM final_date
-            ORDER BY id DESC
-        """).fetchall()
-
-    return render_template("admin.html", bookings=bookings)
-
-
 @app.post("/admin/logout")
-@admin_required
 def admin_logout():
-    session.clear()
+    session.pop("admin_logged_in", None)
     return redirect(url_for("admin_login"))
 
 
-@app.post("/admin/delete/<int:booking_id>")
+@app.post("/delete_booking/<int:booking_id>")
 @admin_required
 def delete_booking(booking_id):
     with get_db_connection() as conn:
         conn.execute("DELETE FROM final_date WHERE id = ?", (booking_id,))
         conn.commit()
-
     return redirect(url_for("admin_panel"))
 
 
-@app.get("/health")
-def health():
-    return {"status": "ok"}
+@app.get("/success")
+def success():
+    return render_template("success.html")
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+@app.get("/booking")
+def booking():
+    return render_template("booking.html")
+
+
+@app.get("/date_time")
+def date_time():
+    return render_template("date_time.html")
+
+
+@app.get("/cofe")
+def cofe():
+    return render_template("cofe.html")
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("error.html", error="صفحه مورد نظر یافت نشد."), 404
+
+if __name__ == '__main__':
