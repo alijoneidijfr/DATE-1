@@ -3,44 +3,135 @@
 {% block title %}مدیریت رزروها{% endblock %}
 
 {% block content %}
-<div class="hero">
-    <div class="card romantic-card">
-        <div class="badge">پنل مدیریت</div>
-        <h1>لیست رزروها</h1>
-
-        <form action="{{ url_for('admin_logout') }}" method="post" style="margin-bottom: 20px;">
-            <button class="secondary-button" type="submit">خروج</button>
-        </form>
-
-        {% if bookings %}
-        <div class="admin-list">
-            {% for booking in bookings %}
-            <div class="booking-card" style="background: rgba(255,255,255,0.8); border: 1px solid #f3c1d3; border-radius: 18px; padding: 18px; margin-bottom: 14px;">
-                <p><strong>نام کافه:</strong> {{ booking.name }}</p>
-                <p><strong>تاریخ:</strong> {{ booking.booking_date }}</p>
-                <p><strong>ساعت:</strong> {{ booking.booking_time }}</p>
-                <p><strong>شماره:</strong> {{ booking.phone }}</p>
-                <p><strong>محله:</strong> {{ booking.cafe_area }}</p>
-                
-                {% if booking.latitude and booking.longitude %}
-                <p><strong>موقعیت:</strong> 
-                    <a href="https://www.google.com/maps?q={{ booking.latitude }},{{ booking.longitude }}" target="_blank" style="color: #e91e63; font-weight: bold;">مشاهده روی نقشه 📍</a>
-                </p>
-                {% else %}
-                <p><strong>موقعیت:</strong> ثبت نشده</p>
-                {% endif %}
-
-                <p style="font-size: 0.8rem; color: #888;"><strong>زمان ثبت:</strong> {{ booking.created_at }}</p>
-
-                <form action="{{ url_for('delete_booking', booking_id=booking.id) }}" method="post" onsubmit="return confirm('این رزرو حذف شود؟');">
-                    <button class="delete-button" type="submit">حذف</button>
-                </form>
-            </div>
-            {% endfor %}
+<section class="admin-card fade-in">
+    <header class="admin-header">
+        <div>
+            <div class="brand">پنل مدیریت</div>
+            <h1>رزروهای ثبت‌شده</h1>
         </div>
-        {% else %}
-        <p>هنوز رزروی ثبت نشده است.</p>
-        {% endif %}
+
+        <form
+            action="{{ url_for('admin_logout') }}"
+            method="post"
+        >
+            <button
+                class="secondary-button"
+                type="submit"
+            >
+                خروج
+            </button>
+        </form>
+    </header>
+
+    {% if bookings %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>نام کافه</th>
+                    <th>محله</th>
+                    <th>تلفن</th>
+                    <th>تاریخ</th>
+                    <th>ساعت</th>
+                    <th>لوکیشن</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.name }}</td>
+
+                    <td>{{ booking.cafe_area }}</td>
+
+                    <td>{{ booking.phone }}</td>
+
+                    <td>{{ booking.booking_date }}</td>
+
+                    <td>{{ booking.booking_time }}</td>
+
+                    <td>
+                        {% if booking.latitude and booking.longitude %}
+                        <a
+                            href="https://www.google.com/maps?q={{ booking.latitude }},{{ booking.longitude }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="location-link"
+                        >
+                            مشاهده روی نقشه 📍
+                        </a>
+
+                        <div class="coordinates">
+                            {{ booking.latitude }},
+                            {{ booking.longitude }}
+                        </div>
+                        {% else %}
+                        <span class="location-missing">
+                            ثبت نشده
+                        </span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <form
+                            action="{{ url_for('delete_booking', booking_id=booking.id) }}"
+                            method="post"
+                            onsubmit="return confirm('این رزرو حذف شود؟');"
+                        >
+                            <button
+                                class="delete-button"
+                                type="submit"
+                            >
+                                حذف
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-</div>
+    {% else %}
+    <p class="empty-state">
+        هنوز هیچ رزروی ثبت نشده است.
+    </p>
+    {% endif %}
+</section>
+
+<style>
+    .location-link {
+        color: #e91e63;
+        font-weight: 800;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .location-link:hover {
+        text-decoration: underline;
+    }
+
+    .coordinates {
+        direction: ltr;
+        color: #888;
+        font-size: 0.72rem;
+        margin-top: 5px;
+        white-space: nowrap;
+    }
+
+    .location-missing {
+        color: #999;
+        white-space: nowrap;
+    }
+
+    @media (max-width: 700px) {
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            min-width: 850px;
+        }
+    }
+</style>
 {% endblock %}
