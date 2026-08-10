@@ -25,7 +25,7 @@ app.config["SECRET_KEY"] = os.environ.get(
 
 ADMIN_PASSWORD = os.environ.get(
     "ADMIN_PASSWORD",
-    "1234"
+    "0200899481"
 )
 
 
