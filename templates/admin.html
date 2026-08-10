@@ -16,11 +16,18 @@
         <div class="admin-list">
             {% for booking in bookings %}
             <div class="booking-card" style="background: rgba(255,255,255,0.8); border: 1px solid #f3c1d3; border-radius: 18px; padding: 18px; margin-bottom: 14px;">
-                <p><strong>نام کافه:</strong> {{ booking.name }}</p>
-                <p><strong>تاریخ:</strong> {{ booking.booking_date }}</p>
-                <p><strong>ساعت:</strong> {{ booking.booking_time }}</p>
+                <p><strong>نام کافه:</strong> {{ booking.cafe_name }}</p>
+                <p><strong>تاریخ:</strong> {{ booking.selected_date }}</p>
+                <p><strong>ساعت:</strong> {{ booking.selected_time }}</p>
                 <p><strong>شماره:</strong> {{ booking.phone }}</p>
                 <p><strong>محله:</strong> {{ booking.cafe_area }}</p>
+
+                {% if booking.latitude and booking.longitude %}
+                    <p><strong>لوکیشن ثبت‌شده:</strong> {{ booking.latitude }}, {{ booking.longitude }}</p>
+                {% else %}
+                    <p><strong>لوکیشن ثبت‌شده:</strong> ندارد</p>
+                {% endif %}
+
                 <p><strong>زمان ثبت:</strong> {{ booking.created_at }}</p>
 
                 <form action="{{ url_for('delete_booking', booking_id=booking.id) }}" method="post" onsubmit="return confirm('این رزرو حذف شود؟');">
