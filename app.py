@@ -2,7 +2,6 @@ import os
 import sqlite3
 from pathlib import Path
 from functools import wraps
-from datetime import datetime
 
 from flask import Flask, render_template, request, redirect, url_for, session
 
@@ -22,7 +21,7 @@ def get_db_connection():
 
 
 def init_db():
-    with get_db_connection() as conn:\
+    with get_db_connection() as conn:
         conn.execute("""
             CREATE TABLE IF NOT EXISTS final_date (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,7 +36,6 @@ def init_db():
             )
         """)
 
-        # Migration ساده برای دیتابیس‌های قدیمی
         columns = {row["name"] for row in conn.execute("PRAGMA table_info(final_date)").fetchall()}
         if "phone" not in columns:
             conn.execute("ALTER TABLE final_date ADD COLUMN phone TEXT DEFAULT ''")
@@ -56,25 +54,27 @@ def init_db():
 init_db()
 
 
-def normalize_time_value(value: str) -> str:
+def normalize_time_value(value):
     value = (value or "").strip()
     if not value:
         return ""
-    try:
-        parts = value.split(":")
-        if len(parts) >= 2:
+
+    parts = value.split(":")
+    if len(parts) >= 2:
+        try:
             hour = int(parts[0])
             minute = int(parts[1])
             return f"{hour:02d}:{minute:02d}"
-    except Exception:
-        pass
+        except ValueError:
+            return value
+
     return value
 
 
 def admin_required(view_func):
     @wraps(view_func)
-    def wrapper(*args, **kwargs):\
-        if not session.get("admin_logged_in"):\
+    def wrapper(*args, **kwargs):
+        if not session.get("admin_logged_in"):
             return redirect(url_for("admin_login"))
         return view_func(*args, **kwargs)
     return wrapper
@@ -196,4 +196,6 @@ def cofe():
 def page_not_found(e):
     return render_template("error.html", error="صفحه مورد نظر یافت نشد."), 404
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
+    app.run(debug=True)
