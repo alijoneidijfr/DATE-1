@@ -21,14 +21,8 @@
         </div>
         {% endif %}
 
-        <form
-            class="booking-form"
-            method="POST"
-            action="{{ url_for('admin_login') }}"
-        >
-            <label for="password">
-                رمز عبور
-            </label>
+        <form class="booking-form" method="POST" action="{{ url_for('admin') }}">
+            <label for="password">رمز عبور</label>
 
             <input
                 id="password"
@@ -38,10 +32,7 @@
                 required
             >
 
-            <button
-                class="yes-btn full-width"
-                type="submit"
-            >
+            <button class="yes-btn full-width" type="submit">
                 ورود به پنل
             </button>
         </form>
