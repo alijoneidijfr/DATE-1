@@ -137,10 +137,12 @@ MONTH_NAMES = [
 
 
 def jalali_date_options(count=14):
-    today = gregorian_date.today()
+    # شروع از 24 مرداد 1405 (15 آگوست 2026)
+    start = gregorian_date(2026, 8, 15)
+
     options = []
     for offset in range(count):
-        current = today + timedelta(days=offset)
+        current = start + timedelta(days=offset)
         jy, jm, jd = gregorian_to_jalali(current.year, current.month, current.day)
         options.append({
             "value": f"{jy:04d}/{jm:02d}/{jd:02d}",
