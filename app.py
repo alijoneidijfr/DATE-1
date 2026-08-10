@@ -40,6 +40,11 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/booking")
+def booking():
+    return render_template("booking.html")
+
+
 @app.route("/book", methods=["POST"])
 def book():
     name = request.form.get("name")
