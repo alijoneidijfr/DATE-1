@@ -1,14 +1,19 @@
 from flask import Flask, render_template, request, redirect, session
 import sqlite3
+from pathlib import Path
+import os
 
 app = Flask(__name__)
-app.secret_key = "secret_key_123"
+app.secret_key = os.environ.get("SECRET_KEY", "secret_key_123")
 
-ADMIN_PASSWORD = "admin"
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin")
+
+BASE_DIR = Path(__file__).resolve().parent
+DB_PATH = BASE_DIR / "database.db"
 
 
 def get_db_connection():
-    conn = sqlite3.connect("database.db")
+    conn = sqlite3.connect(str(DB_PATH))
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -23,6 +28,7 @@ def init_db():
         "date TEXT, "
         "time TEXT)"
     )
+    conn.commit()
     conn.close()
 
 
@@ -41,17 +47,30 @@ def book():
     date = request.form.get("date")
     time = request.form.get("time")
 
-    hour = int(time.split(":")[0])
-    if hour < 16 or hour > 22:
-        return "خطا: فقط بین ساعت ۱۶ تا ۲۲ امکان رزرو وجود دارد.", 400
+    if not all([name, phone, date, time]):
+        return render_template("error.html", error="لطفاً همه فیلدها را تکمیل کنید."), 400
 
-    conn = get_db_connection()
-    conn.execute(
-        "INSERT INTO bookings (name, phone, date, time) VALUES (?, ?, ?, ?)",
-        (name, phone, date, time)
-    )
-    conn.commit()
-    conn.close()
+    if ":" not in time:
+        return render_template("error.html", error="فرمت زمان نامعتبر است."), 400
+
+    try:
+        hour = int(time.split(":", 1)[0])
+    except (ValueError, TypeError):
+        return render_template("error.html", error="فرمت زمان نامعتبر است."), 400
+
+    if hour < 16 or hour > 22:
+        return render_template("error.html", error="خطا: فقط بین ساعت ۱۶ تا ۲۲ امکان رزرو وجود دارد."), 400
+
+    try:
+        conn = get_db_connection()
+        conn.execute(
+            "INSERT INTO bookings (name, phone, date, time) VALUES (?, ?, ?, ?)",
+            (name, phone, date, time)
+        )
+        conn.commit()
+        conn.close()
+    except sqlite3.Error:
+        return render_template("error.html", error="خطا در ثبت رزرو. لطفاً دوباره تلاش کنید."), 500
 
     return render_template(
         "success.html",
@@ -73,9 +92,12 @@ def admin():
     if not session.get("logged_in"):
         return render_template("admin_login.html")
 
-    conn = get_db_connection()
-    bookings = conn.execute("SELECT * FROM bookings ORDER BY id DESC").fetchall()
-    conn.close()
+    try:
+        conn = get_db_connection()
+        bookings = conn.execute("SELECT * FROM bookings ORDER BY id DESC").fetchall()
+        conn.close()
+    except sqlite3.Error:
+        return render_template("error.html", error="خطا در دریافت اطلاعات رزروها."), 500
 
     return render_template("admin.html", bookings=bookings)
 
@@ -85,10 +107,13 @@ def delete(id):
     if not session.get("logged_in"):
         return redirect("/admin")
 
-    conn = get_db_connection()
-    conn.execute("DELETE FROM bookings WHERE id = ?", (id,))
-    conn.commit()
-    conn.close()
+    try:
+        conn = get_db_connection()
+        conn.execute("DELETE FROM bookings WHERE id = ?", (id,))
+        conn.commit()
+        conn.close()
+    except sqlite3.Error:
+        return render_template("error.html", error="خطا در حذف رزرو."), 500
 
     return redirect("/admin")
 
