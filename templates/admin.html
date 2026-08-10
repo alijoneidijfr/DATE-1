@@ -1,43 +1,167 @@
 {% extends "base.html" %}
+
+{% block title %}پنل مدیریت رزروها{% endblock %}
+
 {% block content %}
-<div class="card">
-    <div style="display:flex; justify-content:space-between;">
-        <h1>رزروها</h1>
-        <a href="/admin/logout">خروج</a>
-    </div>
-    <table>
-        <thead>
-            <tr>
-                <th>نام کافه</th>
-                <th>محله</th>
-                <th>تاریخ</th>
-                <th>ساعت</th>
-                <th>لوکیشن</th>
-                <th>عملیات</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for b in bookings %}
-            <tr>
-                <td>{{ b.cafe_name }}</td>
-                <td>{{ b.cafe_area }}</td>
-                <td>{{ b.selected_date }}</td>
-                <td>{{ b.selected_time }}</td>
-                <td>
-                    {% if b.latitude and b.longitude %}
-                        <a href="https://www.google.com/maps?q={{b.latitude}},{{b.longitude}}" target="_blank">مشاهده نقشه</a>
-                    {% else %}
-                        ثبت نشده
-                    {% endif %}
-                </td>
-                <td>
-                    <form method="POST" action="/admin/delete/{{ b.id }}">
-                        <button type="submit">حذف</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% endblock %}
+
+<style>
+    .admin-page {
+        width: min(1150px, 94%);
+        margin: 35px auto;
+    }
+
+    .admin-panel {
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid #f1c9d9;
+        border-radius: 24px;
+        padding: 24px;
+        box-shadow: 0 12px 30px rgba(160, 55, 100, 0.12);
+    }
+
+    .admin-topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 22px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid #f2dce5;
+    }
+
+    .admin-title-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .admin-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        background: #fff0f5;
+        font-size: 23px;
+    }
+
+    .admin-title-box h1 {
+        margin: 0;
+        color: #76284d;
+        font-size: 1.4rem;
+    }
+
+    .admin-title-box p {
+        margin: 5px 0 0;
+        color: #987384;
+        font-size: 0.85rem;
+    }
+
+    .admin-logout-btn {
+        border: none;
+        border-radius: 11px;
+        padding: 10px 16px;
+        cursor: pointer;
+        background: #fff0f5;
+        color: #96345d;
+        font-family: inherit;
+        font-size: 0.88rem;
+    }
+
+    .admin-logout-btn:hover {
+        background: #f8d5e2;
+    }
+
+    .admin-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        border: 1px solid #f1dce5;
+        border-radius: 16px;
+    }
+
+    .admin-table {
+        width: 100%;
+        min-width: 900px;
+        border-collapse: collapse;
+        text-align: right;
+    }
+
+    .admin-table th {
+        padding: 14px 12px;
+        background: #fff2f6;
+        color: #7c2d50;
+        font-size: 0.86rem;
+        white-space: nowrap;
+    }
+
+    .admin-table td {
+        padding: 14px 12px;
+        border-top: 1px solid #f5e5eb;
+        color: #5e414d;
+        font-size: 0.86rem;
+        vertical-align: middle;
+    }
+
+    .admin-table tr:hover td {
+        background: #fffafd;
+    }
+
+    .cafe-name {
+        color: #722747;
+        font-weight: bold;
+    }
+
+    .date-cell,
+    .time-cell,
+    .phone-cell {
+        direction: ltr;
+        unicode-bidi: plaintext;
+        white-space: nowrap;
+    }
+
+    .location-link {
+        display: inline-block;
+        padding: 8px 11px;
+        border-radiu: 10px;
+        background: #fff0f5;
+        color: #b0275a;
+        text-decoration: none;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    .location-link:hover {
+        background: #d84e7d;
+        color: white;
+    }
+
+    .location-empty {
+        color: #a58b95;
+        background: #f7f3f5;
+        padding: 7px 10px;
+        border-radius: 9px;
+        white-space: nowrap;
+        font-size: 0.8rem;
+    }
+
+    .delete-form {
+        margin: 0;
+    }
+
+    .delete-button {
+        border: 1px solid #efb8c9;
+        border-radius: 9px;
+        padding: 7px 12px;
+        cursor: pointer;
+        background: white;
+        color: #c2385d;
+        font-family: inherit;
+    }
+
+    .delete-button:hover {
+        background: #d94368;
+        border-color: #d94368;
+        color: white;
+    }
+
+    .empty-message {
