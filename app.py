@@ -250,40 +250,70 @@ def submit_final():
     available_dates = {item["value"] for item in jalali_date_options(14)}
 
     if date_value not in available_dates or time_value not in TIME_OPTIONS:
-        return render_template("error.html", error="تاریخ یا ساعت انتخاب‌شده معتبر نیست. لطفاً دوباره انتخاب کن.")
+        return render_template(
+            "error.html",
+            error="تاریخ یا ساعت انتخاب‌شده معتبر نیست. لطفاً دوباره انتخاب کن."
+        )
 
     if not cafe_name or not cafe_area:
-        return render_template("error.html", error="لطفاً نام کافه و محله را وارد کن.")
+        return render_template(
+            "error.html",
+            error="لطفاً نام کافه و محله را وارد کن."
+        )
 
     if len(cafe_name) > 120 or len(cafe_area) > 120 or len(phone) > 40:
-        return render_template("error.html", error="یکی از اطلاعات واردشده بیش از حد طولانی است.")
+        return render_template(
+            "error.html",
+            error="یکی از اطلاعات واردشده بیش از حد طولانی است."
+        )
 
     # مختصات اختیاری‌اند؛ اگر وارد شده‌اند باید شکل عددی معتبر داشته باشند.
     if lat or lng:
         try:
             lat_float = float(lat)
             lng_float = float(lng)
+
             if not (-90 <= lat_float <= 90 and -180 <= lng_float <= 180):
                 raise ValueError
+
             lat = f"{lat_float:.6f}"
             lng = f"{lng_float:.6f}"
-        except ValueError:
-            return render_template("error.html", error="لوکیشن انتخاب‌شده معتبر نیست.")
 
-     with get_db_connection() as conn:
+        except ValueError:
+            return render_template(
+                "error.html",
+                error="لوکیشن انتخاب‌شده معتبر نیست."
+            )
+
+    with get_db_connection() as conn:
         conn.execute("""
             INSERT INTO final_date
             (selected_date, selected_time, cafe_name, cafe_area, latitude, longitude, phone)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (date_value, time_value, cafe_name, cafe_area, lat, lng, phone))
+        """, (
+            date_value,
+            time_value,
+            cafe_name,
+            cafe_area,
+            lat,
+            lng,
+            phone
+        ))
         conn.commit()
 
     # محاسبه روز هفته بر اساس تاریخ انتخاب‌شده
     selected_gregorian = parse_jalali(date_value)
+
     weekday_names = [
-        "دوشنبه", "سه‌شنبه", "چهارشنبه",
-        "پنجشنبه", "جمعه", "شنبه", "یکشنبه"
+        "دوشنبه",
+        "سه‌شنبه",
+        "چهارشنبه",
+        "پنجشنبه",
+        "جمعه",
+        "شنبه",
+        "یکشنبه"
     ]
+
     weekday = weekday_names[selected_gregorian.weekday()]
 
     return render_template(
@@ -297,7 +327,6 @@ def submit_final():
         phone=phone,
         weekday=weekday,
     )
-
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
     error = None
