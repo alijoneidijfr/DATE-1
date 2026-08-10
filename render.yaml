@@ -8,3 +8,9 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: SESSION_COOKIE_SECURE
+        value: "1"
+      - key: DEFAULT_PHONE
+        value: "+989190118068"
