@@ -1,41 +1,15 @@
 {% extends "base.html" %}
-
 {% block title %}ورود مدیر{% endblock %}
-
 {% block content %}
-<div class="hero">
-    <div class="card romantic-card" style="max-width: 430px; width: 92%;">
-        <div class="heart">🔐</div>
-
-        <div class="badge">پنل مدیریت</div>
-
-        <h1>ورود مدیر</h1>
-
-        <p class="subtitle">
-            برای مشاهده رزروها رمز عبور را وارد کن.
-        </p>
-
-        {% if error %}
-        <div class="error-message">
-            {{ error }}
-        </div>
-        {% endif %}
-
-        <form class="booking-form" method="POST" action="{{ url_for('admin') }}">
-            <label for="password">رمز عبور</label>
-
-            <input
-                id="password"
-                name="password"
-                type="password"
-                autocomplete="current-password"
-                required
-            >
-
-            <button class="yes-btn full-width" type="submit">
-                ورود به پنل
-            </button>
-        </form>
-    </div>
-</div>
+<section class="booking-card login-card fade-in">
+  <div class="brand">پنل مدیریت</div>
+  <h1>ورود مدیر</h1>
+  <p class="lead">برای مشاهده و مدیریت رزروها رمز را وارد کن.</p>
+  <form class="booking-form" method="post">
+    <label>رمز عبور
+      <input name="password" type="password" autocomplete="current-password" required>
+    </label>
+    <button class="primary-button" type="submit">ورود به پنل</button>
+  </form>
+</section>
 {% endblock %}
