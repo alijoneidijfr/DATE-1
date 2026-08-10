@@ -1,6 +1,5 @@
-from flask import Flask, render_template, request, redirect, session, flash
+from flask import Flask, render_template, request, redirect, session
 import sqlite3
-import os
 
 app = Flask(__name__)
 app.secret_key = "secret_key_123"
@@ -42,7 +41,6 @@ def book():
     date = request.form.get("date")
     time = request.form.get("time")
 
-    # محدودیت ساعت
     hour = int(time.split(":")[0])
     if hour < 16 or hour > 22:
         return "خطا: فقط بین ساعت ۱۶ تا ۲۲ امکان رزرو وجود دارد.", 400
@@ -55,7 +53,12 @@ def book():
     conn.commit()
     conn.close()
 
-    return render_template("success.html", name=name)
+    return render_template(
+        "success.html",
+        name=name,
+        booking_date=date,
+        booking_time=time
+    )
 
 
 @app.route("/admin", methods=["GET", "POST"])
@@ -65,7 +68,7 @@ def admin():
         if password == ADMIN_PASSWORD:
             session["logged_in"] = True
         else:
-            flash("رمز عبور اشتباه است")
+            return render_template("admin_login.html", error="رمز عبور اشتباه است")
 
     if not session.get("logged_in"):
         return render_template("admin_login.html")
@@ -77,13 +80,16 @@ def admin():
     return render_template("admin.html", bookings=bookings)
 
 
-@app.route("/delete/<int:id>")
+@app.route("/delete/<int:id>", methods=["POST"])
 def delete(id):
-    if session.get("logged_in"):
-        conn = get_db_connection()
-        conn.execute("DELETE FROM bookings WHERE id = ?", (id,))
-        conn.commit()
-        conn.close()
+    if not session.get("logged_in"):
+        return redirect("/admin")
+
+    conn = get_db_connection()
+    conn.execute("DELETE FROM bookings WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+
     return redirect("/admin")
 
 
