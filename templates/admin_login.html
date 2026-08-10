@@ -1,13 +1,50 @@
 {% extends "base.html" %}
+
+{% block title %}ورود مدیر{% endblock %}
+
 {% block content %}
-<div class="card">
-    <h1>ورود مدیر</h1>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}<p style="color:red">{{ messages[0] }}</p>{% endif %}
-    {% endwith %}
-    <form method="POST" action="/admin/login">
-        <input type="password" name="password" placeholder="رمز عبور" required>
-        <button type="submit">ورود</button>
-    </form>
+<div class="hero">
+    <div class="card romantic-card" style="max-width: 430px; width: 92%;">
+        <div class="heart">🔐</div>
+
+        <div class="badge">پنل مدیریت</div>
+
+        <h1>ورود مدیر</h1>
+
+        <p class="subtitle">
+            برای مشاهده رزروها رمز عبور را وارد کن.
+        </p>
+
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form
+            class="booking-form"
+            method="POST"
+            action="{{ url_for('admin_login') }}"
+        >
+            <label for="password">
+                رمز عبور
+            </label>
+
+            <input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                required
+            >
+
+            <button
+                class="yes-btn full-width"
+                type="submit"
+            >
+                ورود به پنل
+            </button>
+        </form>
+    </div>
 </div>
 {% endblock %}
