@@ -1,137 +1,182 @@
-from flask import Flask, render_template, request, redirect, session
+import os
 import sqlite3
 from pathlib import Path
-import os
+from functools import wraps
+
+from flask import Flask, render_template, request, redirect, url_for, session
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "secret_key_123")
-
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin")
 
 BASE_DIR = Path(__file__).resolve().parent
-DB_PATH = BASE_DIR / "database.db"
+DATABASE_PATH = BASE_DIR / "database.db"
+
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-key")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "1234")
 
 
 def get_db_connection():
-    conn = sqlite3.connect(str(DB_PATH))
+    conn = sqlite3.connect(DATABASE_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
 
 def init_db():
-    conn = get_db_connection()
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS bookings ("
-        "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "name TEXT, "
-        "phone TEXT, "
-        "date TEXT, "
-        "time TEXT)"
-    )
-    conn.commit()
-    conn.close()
+    with get_db_connection() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS final_date (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                selected_date TEXT NOT NULL,
+                selected_time TEXT NOT NULL,
+                cafe_name TEXT DEFAULT '',
+                cafe_area TEXT DEFAULT '',
+                latitude TEXT DEFAULT '',
+                longitude TEXT DEFAULT '',
+                phone TEXT DEFAULT '',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        # Migration ساده برای دیتابیس‌های قدیمی
+        columns = {row["name"] for row in conn.execute("PRAGMA table_info(final_date)").fetchall()}
+        if "phone" not in columns:
+            conn.execute("ALTER TABLE final_date ADD COLUMN phone TEXT DEFAULT ''")
+        if "cafe_name" not in columns:
+            conn.execute("ALTER TABLE final_date ADD COLUMN cafe_name TEXT DEFAULT ''")
+        if "cafe_area" not in columns:
+            conn.execute("ALTER TABLE final_date ADD COLUMN cafe_area TEXT DEFAULT ''")
+        if "latitude" not in columns:
+            conn.execute("ALTER TABLE final_date ADD COLUMN latitude TEXT DEFAULT ''")
+        if "longitude" not in columns:
+            conn.execute("ALTER TABLE final_date ADD COLUMN longitude TEXT DEFAULT ''")
+
+        conn.commit()
 
 
 init_db()
 
 
-@app.route("/")
+def admin_required(view_func):
+    @wraps(view_func)
+    def wrapper(*args, **kwargs):
+        if not session.get("admin_logged_in"):
+            return redirect(url_for("admin_login"))
+        return view_func(*args, **kwargs)
+    return wrapper
+
+
+@app.get("/")
 def index():
     return render_template("index.html")
 
 
-@app.route("/booking")
-def booking():
-    return render_template("booking.html")
+@app.route("/arrange", methods=["GET", "POST"])
+def arrange():
+    error = None
+
+    if request.method == "POST":
+        date = request.form.get("date", "").strip()
+        time = request.form.get("time", "").strip()
+
+        if not date or not time:
+            error = "لطفاً تاریخ و ساعت را کامل انتخاب کن."
+            return render_template("arrange.html", error=error)
+
+        return render_template("cofe.html", date=date, time=time)
+
+    return render_template("arrange.html")
 
 
-@app.route("/book", methods=["POST"])
-def book():
-    name = request.form.get("name")
-    phone = request.form.get("phone")
-    date = request.form.get("date")
-    time = request.form.get("time")
+@app.post("/submit-final")
+def submit_final():
+    date = request.form.get("date", "").strip()
+    time = request.form.get("time", "").strip()
+    cafe_name = request.form.get("cafe_name", "").strip()
+    cafe_area = request.form.get("cafe_area", "").strip()
+    lat = request.form.get("latitude", "").strip()
+    lng = request.form.get("longitude", "").strip()
+    phone = request.form.get("phone", "").strip()
 
-    if not all([name, phone, date, time]):
-        return render_template("error.html", error="لطفاً همه فیلدها را تکمیل کنید."), 400
+    if not date or not time or not cafe_name or not cafe_area:
+        return render_template("error.html", error="اطلاعات ناقص است.")
 
-    if ":" not in time:
-        return render_template("error.html", error="فرمت زمان نامعتبر است."), 400
-
-    try:
-        hour = int(time.split(":", 1)[0])
-    except (ValueError, TypeError):
-        return render_template("error.html", error="فرمت زمان نامعتبر است."), 400
-
-    if hour < 16 or hour > 22:
-        return render_template("error.html", error="خطا: فقط بین ساعت ۱۶ تا ۲۲ امکان رزرو وجود دارد."), 400
-
-    try:
-        conn = get_db_connection()
-        conn.execute(
-            "INSERT INTO bookings (name, phone, date, time) VALUES (?, ?, ?, ?)",
-            (name, phone, date, time)
-        )
+    with get_db_connection() as conn:
+        conn.execute("""
+            INSERT INTO final_date
+            (selected_date, selected_time, cafe_name, cafe_area, latitude, longitude, phone)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (date, time, cafe_name, cafe_area, lat, lng, phone))
         conn.commit()
-        conn.close()
-    except sqlite3.Error:
-        return render_template("error.html", error="خطا در ثبت رزرو. لطفاً دوباره تلاش کنید."), 500
 
     return render_template(
-        "success.html",
-        name=name,
-        booking_date=date,
-        booking_time=time
+        "thanks.html",
+        date=date,
+        time=time,
+        cafe_name=cafe_name,
+        cafe_area=cafe_area,
+        latitude=lat,
+        longitude=lng,
+        phone=phone
     )
 
 
-@app.route("/admin", methods=["GET", "POST"])
-def admin():
+@app.route("/admin/login", methods=["GET", "POST"])
+def admin_login():
+    error = None
+
     if request.method == "POST":
-        password = request.form.get("password")
+        password = request.form.get("password", "").strip()
+
         if password == ADMIN_PASSWORD:
-            session["logged_in"] = True
+            session["admin_logged_in"] = True
+            return redirect(url_for("admin_panel"))
         else:
-            return render_template("admin_login.html", error="رمز عبور اشتباه است")
+            error = "رمز عبور اشتباه است."
 
-    if not session.get("logged_in"):
-        return render_template("admin_login.html")
+    return render_template("admin_login.html", error=error)
 
-    try:
-        conn = get_db_connection()
-        bookings = conn.execute("SELECT * FROM bookings ORDER BY id DESC").fetchall()
-        conn.close()
-    except sqlite3.Error:
-        return render_template("error.html", error="خطا در دریافت اطلاعات رزروها."), 500
+
+@app.get("/admin")
+@admin_required
+def admin_panel():
+    with get_db_connection() as conn:
+        bookings = conn.execute("""
+            SELECT
+                id,
+                cafe_name AS name,
+                selected_date AS booking_date,
+                selected_time AS booking_time,
+                phone,
+                cafe_area,
+                latitude,
+                longitude,
+                created_at
+            FROM final_date
+            ORDER BY id DESC
+        """).fetchall()
 
     return render_template("admin.html", bookings=bookings)
 
 
-@app.route("/delete/<int:id>", methods=["POST"])
-def delete(id):
-    if not session.get("logged_in"):
-        return redirect("/admin")
+@app.post("/admin/logout")
+@admin_required
+def admin_logout():
+    session.clear()
+    return redirect(url_for("admin_login"))
 
-    try:
-        conn = get_db_connection()
-        conn.execute("DELETE FROM bookings WHERE id = ?", (id,))
+
+@app.post("/admin/delete/<int:booking_id>")
+@admin_required
+def delete_booking(booking_id):
+    with get_db_connection() as conn:
+        conn.execute("DELETE FROM final_date WHERE id = ?", (booking_id,))
         conn.commit()
-        conn.close()
-    except sqlite3.Error:
-        return render_template("error.html", error="خطا در حذف رزرو."), 500
 
-    return redirect("/admin")
+    return redirect(url_for("admin_panel"))
 
 
-@app.route("/logout")
-def logout():
-    session.pop("logged_in", None)
-    return redirect("/admin")
-
-
-@app.route("/health")
+@app.get("/health")
 def health():
-    return "ok", 200
+    return {"status": "ok"}
 
 
 if __name__ == "__main__":
