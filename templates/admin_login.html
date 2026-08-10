@@ -1,16 +1,82 @@
 {% extends "base.html" %}
-{% block title %}ورود مدیر{% endblock %}
+
+{% block title %}ورود به پنل مدیریت{% endblock %}
+
 {% block content %}
-<section class="booking-card login-card fade-in">
-  <div class="brand">پنل مدیریت</div>
-  <h1>ورود مدیر</h1>
-  <p class="lead">برای مشاهده و مدیریت رزروها رمز را وارد کن.</p>
-  {% if error %}<div class="error-message">{{ error }}</div>{% endif %}
-  <form class="booking-form" method="post">
-    <label>رمز عبور
-      <input name="password" type="password" autocomplete="current-password" required>
-    </label>
-    <button class="primary-button" type="submit">ورود به پنل</button>
-  </form>
-</section>
+<div class="hero admin-login-hero">
+    <div class="card romantic-card admin-login-card">
+        <div class="admin-login-icon">🔐</div>
+
+        <div class="badge">پنل مدیریت</div>
+
+        <h1>خوش اومدی 👋</h1>
+
+        <p class="subtitle admin-login-subtitle">
+            برای مشاهده و مدیریت رزروها، رمز عبور پنل را وارد کن.
+        </p>
+
+        {% if error %}
+        <div class="error-message admin-error">
+            <span class="error-icon">⚠️</span>
+            <span>{{ error }}</span>
+        </div>
+        {% endif %}
+
+        <form class="admin-login-form" method="post">
+            <div class="admin-password-field">
+                <label for="admin-password">رمز عبور</label>
+                <div class="password-input-wrap">
+                    <span class="password-icon">🔑</span>
+                    <input
+                        id="admin-password"
+                        name="password"
+                        type="password"
+                        autocomplete="current-password"
+                        placeholder="رمز پنل را وارد کن"
+                        required
+                        autofocus
+                    >
+                    <button
+                        class="password-toggle"
+                        type="button"
+                        id="passwordToggle"
+                        aria-label="نمایش رمز عبور"
+                        title="نمایش رمز عبور"
+                    >
+                        👁
+                    </button>
+                </div>
+            </div>
+
+            <button class="yes-btn admin-login-button" type="submit">
+                ورود به پنل مدیریت
+                <span>←</span>
+            </button>
+        </form>
+
+        <div class="admin-login-note">
+            <span>🔒</span>
+            <span>این بخش فقط برای مدیریت رزروهاست.</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const passwordInput = document.getElementById("admin-password");
+    const passwordToggle = document.getElementById("passwordToggle");
+
+    passwordToggle.addEventListener("click", function () {
+        const isPassword = passwordInput.type === "password";
+        passwordInput.type = isPassword ? "text" : "password";
+        passwordToggle.textContent = isPassword ? "🙈" : "👁";
+        passwordToggle.setAttribute(
+            "aria-label",
+            isPassword ? "پنهان کردن رمز عبور" : "نمایش رمز عبور"
+        );
+        passwordToggle.setAttribute(
+            "title",
+            isPassword ? "پنهان کردن رمز عبور" : "نمایش رمز عبور"
+        );
+    });
+</script>
 {% endblock %}
