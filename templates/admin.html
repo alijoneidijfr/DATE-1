@@ -7,13 +7,13 @@
 <div class="admin-page">
     <section class="admin-panel">
 
-        <header class="admin-topbar">
+        <div class="admin-topbar">
             <div class="admin-title-box">
                 <div class="admin-icon">📋</div>
 
                 <div>
                     <h1>رزروهای ثبت‌شده</h1>
-                    <p>مدیریت قرارها و مشاهده اطلاعات ثبت‌شده</p>
+                    <p>مدیریت اطلاعات قرارها</p>
                 </div>
             </div>
 
@@ -23,18 +23,18 @@
             >
                 خروج
             </a>
-        </header>
+        </div>
 
         {% if bookings %}
         <div class="admin-table-wrap">
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>نام کافه</th>
+                        <th>کافه</th>
                         <th>محله</th>
-                        <th>تلفن</th>
                         <th>تاریخ</th>
                         <th>ساعت</th>
+                        <th>تلفن</th>
                         <th>لوکیشن</th>
                         <th>عملیات</th>
                     </tr>
@@ -44,38 +44,38 @@
                     {% for booking in bookings %}
                     <tr>
                         <td class="cafe-name">
-                            {{ booking.cafe_name or "—" }}
+                            {{ booking['cafe_name'] or '—' }}
                         </td>
 
                         <td>
-                            {{ booking.cafe_area or "—" }}
-                        </td>
-
-                        <td class="phone-cell">
-                            {{ booking.phone or "—" }}
+                            {{ booking['cafe_area'] or '—' }}
                         </td>
 
                         <td class="date-cell">
-                            {{ booking.selected_date or "—" }}
+                            {{ booking['selected_date'] or '—' }}
                         </td>
 
                         <td class="time-cell">
-                            {{ booking.selected_time or "—" }}
+                            {{ booking['selected_time'] or '—' }}
+                        </td>
+
+                        <td class="phone-cell">
+                            {{ booking['phone'] or '—' }}
                         </td>
 
                         <td>
-                            {% if booking.latitude and booking.longitude %}
+                            {% if booking['latitude'] and booking['longitude'] %}
                             <a
                                 class="location-link"
-                                href="https://www.google.com/maps?q={{ booking.latitude }},{{ booking.longitude }}"
+                                href="https://www.google.com/maps?q={{ booking['latitude'] }},{{ booking['longitude'] }}"
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                📍 مشاهده روی نقشه
+                                مشاهده نقشه
                             </a>
                             {% else %}
                             <span class="location-empty">
-                                انتخاب نشده
+                                ثبت نشده
                             </span>
                             {% endif %}
                         </td>
@@ -84,8 +84,8 @@
                             <form
                                 class="delete-form"
                                 method="POST"
-                                action="{{ url_for('delete_booking', id=booking.id) }}"
-                                onsubmit="return confirm('از حذف این رزرو مطمئنی؟');"
+                                action="{{ url_for('delete_booking', id=booking['id']) }}"
+                                onsubmit="return confirm('این رزرو حذف شود؟');"
                             >
                                 <button
                                     class="delete-button"
@@ -100,11 +100,10 @@
                 </tbody>
             </table>
         </div>
-
         {% else %}
-        <div class="empty-message">
-            هنوز هیچ رزروی ثبت نشده است. ☕💕
-        </div>
+        <p class="empty-message">
+            هنوز هیچ رزروی ثبت نشده است.
+        </p>
         {% endif %}
 
     </section>
@@ -249,25 +248,30 @@
     }
 
     .empty-message {
-        padding: 40px 15px;
-        border: 1px dashed #e8b9ca;
-        border-radius: 15px;
-        color: #966b7c;
+        margin: 25px 0 5px;
         text-align: center;
-        background: #fffafd;
+        color: #987384;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 650px) {
+        .admin-page {
+            width: 94%;
+            margin: 20px auto;
+        }
+
         .admin-panel {
-            padding: 16px;
+            padding: 15px;
+            border-radius: 18px;
         }
 
         .admin-topbar {
-            align-items: flex-start;
+            align-items: stretch;
+            flex-direction: column;
         }
 
-        .admin-title-box h1 {
-            font-size: 1.1rem;
+        .admin-logout-btn {
+            width: 100%;
+            text-align: center;
         }
     }
 </style>
